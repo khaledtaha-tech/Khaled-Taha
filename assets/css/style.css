@@ -436,3 +436,45 @@ body {
     padding: 40px 32px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
 }
+
+
+
+
+
+/* Footer Contrast & Legibility Fixes */
+.footer-upgraded {
+    background-color: #060911 !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: #f1f5f9 !important;
+}
+
+.footer-upgraded p,
+.footer-upgraded span,
+.footer-upgraded .text-muted {
+    color: #cbd5e1 !important;
+}
+
+.footer-upgraded .text-white {
+    color: #ffffff !important;
+}
+
+.footer-link {
+    color: #94a3b8 !important;
+    text-decoration: none;
+    transition: color 0.3s ease;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.footer-link:hover {
+    color: #38bdf8 !important;
+}
+
+.footer-upgraded hr {
+    border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+.footer-upgraded .small,
+.footer-upgraded .small p {
+    color: #94a3b8 !important;
+}
