@@ -42,51 +42,17 @@ function is_rtl() {
     return get_lang() === 'ar';
 }
 
-$translations = [
-    'en' => [
-        'nav_home' => 'Home',
-        'nav_about' => 'About',
-        'nav_experience' => 'Experience',
-        'nav_products' => 'Technical Products',
-        'nav_software' => 'Software Store',
-        'nav_contact' => 'Contact',
-        'welcome_tag' => 'Welcome to my professional portfolio',
-        'hero_name' => 'Khaled Taha',
-        'hero_title' => 'Production & Technical Operations Manager',
-        'hero_subtitle' => 'Plastic Extrusion Specialist | Factory Improvement & Digital Solutions',
-        'hero_desc' => '19+ years of experience in plastic extrusion, PVC compounding, process optimization, and industrial software development.',
-        'btn_projects' => 'View Projects',
-        'btn_software' => 'Software Store',
-        'btn_contact' => 'Contact Me',
-        'years_exp' => 'Years Exp.',
-        'about_title' => 'About Me',
-        'about_desc' => 'Operations leader specialized in plastic manufacturing, raw material optimization, and building practical management software.',
-        'footer_rights' => 'All rights reserved.'
-    ],
-    'ar' => [
-        'nav_home' => 'Home',
-        'nav_about' => 'About',
-        'nav_experience' => 'Experience',
-        'nav_products' => 'Technical Products',
-        'nav_software' => 'Software Store',
-        'nav_contact' => 'Contact',
-        'welcome_tag' => 'Welcome to my professional portfolio',
-        'hero_name' => 'Khaled Taha',
-        'hero_title' => 'Production & Technical Operations Manager',
-        'hero_subtitle' => 'Plastic Extrusion Specialist | Factory Improvement & Digital Solutions',
-        'hero_desc' => '19+ years of experience in plastic extrusion, PVC compounding, process optimization, and industrial software development.',
-        'btn_projects' => 'View Projects',
-        'btn_software' => 'Software Store',
-        'btn_contact' => 'Contact Me',
-        'years_exp' => 'Years Exp.',
-        'about_title' => 'About Me',
-        'about_desc' => 'Operations leader specialized in plastic manufacturing, raw material optimization, and building practical management software.',
-        'footer_rights' => 'All rights reserved.'
-    ]
-];
-
 function __($key) {
-    global $translations;
-    $lang = get_lang();
-    return $translations[$lang][$key] ?? $key;
+    static $dictionary = null;
+    if ($dictionary === null) {
+        $lang = get_lang();
+        $file = __DIR__ . '/../../languages/' . $lang . '.json';
+        if (file_exists($file)) {
+            $json = file_get_contents($file);
+            $dictionary = json_decode($json, true) ?? [];
+        } else {
+            $dictionary = [];
+        }
+    }
+    return $dictionary[$key] ?? $key;
 }
