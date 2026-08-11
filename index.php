@@ -19,9 +19,9 @@
                 </div>
             </div>
             <div class="col-lg-5 text-center">
-                <div class="profile-avatar-placeholder">
-                    <i class="fa-solid fa-user-tie text-secondary fs-1 mb-2"></i>
-                    <span class="text-muted small">Khaled Taha</span>
+                <div class="hero-img-wrapper">
+                    <img src="<?php echo base_url('assets/images/khaled-taha.jpg'); ?>" alt="Khaled Taha" class="hero-profile-img">
+                    <div class="hero-img-fade"></div>
                     <div class="badge-experience">
                         <span class="fs-5">19+</span> <span><?php echo __('years_exp'); ?></span>
                     </div>
