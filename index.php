@@ -76,46 +76,31 @@ $experiences_items = $store_data['experiences'] ?? [];
         </div>
     </div>
 </section>
-
-<!-- Experience Section (Dynamic) -->
-<section id="experience" class="section-padding">
+<!-- Experience Section -->
+<section id="experience" class="section-padding bg-darker">
     <div class="container">
         <div class="text-center mb-5 reveal">
             <h2 class="section-title"><?php echo __('exp_title'); ?></h2>
             <p class="section-desc"><?php echo __('exp_subtitle'); ?></p>
         </div>
-        <div class="row justify-content-center">
-            <div class="col-lg-9">
-                <div class="timeline">
-                    <?php if (empty($experiences_items)): ?>
-                        <!-- Fallback Static Experiences if JSON is empty -->
-                        <div class="timeline-item reveal delay-100">
-                            <div class="timeline-dot"></div>
-                            <div class="card-custom">
-                                <span class="timeline-date"><?php echo __('exp_job1_date'); ?></span>
-                                <h5><?php echo __('exp_job1_title'); ?></h5>
-                                <p class="text-light"><?php echo __('exp_job1_desc'); ?></p>
-                            </div>
-                        </div>
-                    <?php else: ?>
-                        <!-- Dynamic Experiences from Admin Panel -->
-                        <?php foreach ($experiences_items as $idx => $exp): ?>
-                            <div class="timeline-item reveal delay-100">
-                                <div class="timeline-dot"></div>
-                                <div class="card-custom">
-                                    <span class="timeline-date"><?php echo htmlspecialchars($exp['period']); ?></span>
-                                    <h5><?php echo htmlspecialchars($exp['title']); ?></h5>
-                                    <p class="text-light"><?php echo htmlspecialchars($exp['desc']); ?></p>
-                                </div>
-                            </div>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
+        
+        <div class="timeline">
+            <?php if (empty($experiences_items)): ?>
+                <div class="text-center text-muted py-4">No experience entries available.</div>
+            <?php else: ?>
+                <?php foreach ($experiences_items as $exp): ?>
+                <div class="timeline-item reveal">
+                    <div class="timeline-content card-custom">
+                        <span class="badge bg-primary mb-2"><?php echo htmlspecialchars($exp['period']); ?></span>
+                        <h4 class="text-white fw-bold mb-2"><?php echo htmlspecialchars($exp['title']); ?></h4>
+                        <p class="text-light small mb-0"><?php echo htmlspecialchars($exp['desc']); ?></p>
+                    </div>
                 </div>
-            </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
         </div>
     </div>
 </section>
-
 <!-- Technical Products Section -->
 <section id="products" class="section-padding bg-section-alt">
     <div class="container">
