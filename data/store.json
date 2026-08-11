@@ -1,5 +1,4 @@
 {
-    "hero_image": "assets/imgs/1736952843591.jfif",
     "software": [
         {
             "id": "SW-101",
@@ -28,13 +27,13 @@
     ],
     "experiences": [
         {
-            "id": 1,
+            "id": "EXP-1",
             "period": "Jan 2025 - Present",
             "title": "Manufacturing Manager - Salem Balhamer Holding",
             "desc": "Overseeing operational management, factory workflow optimization, machine allocation, and quality systems across production lines."
         },
         {
-            "id": 2,
+            "id": "EXP-2",
             "period": "2020 - Dec 2024",
             "title": "Production Manager - Saudi Industries for Pipes (SIP)",
             "desc": "Managed high-capacity extrusion lines for uPVC and HDPE pipes, optimized compounding formulas, and achieved up to 35% reduction in scrap rates."
