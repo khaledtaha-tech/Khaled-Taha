@@ -43,7 +43,7 @@
 
             <div class="d-flex flex-wrap justify-content-between align-items-center pt-3 text-muted small">
                 <p class="mb-0">&copy; <?php echo date('Y'); ?> Khaled Taha. <?php echo __('footer_rights'); ?></p>
-                <p class="mb-0"<?php echo __('footer_Q'); ?></p>
+                <p class="mb-0"><?php echo __('footer_Q'); ?></p>
             </div>
         </div>
     </footer>
