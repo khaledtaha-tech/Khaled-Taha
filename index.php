@@ -18,20 +18,20 @@
                     <a href="https://wa.me/966559848021" target="_blank" class="btn-custom-whatsapp"><i class="fab fa-whatsapp me-1"></i> <?php echo __('btn_contact'); ?></a>
                 </div>
             </div>
-<div class="col-lg-5 text-center">
-    <div class="hero-img-wrapper">
-        <div class="hero-img-inner">
-            <img src="<?php echo base_url('assets/images/khaled-taha.jpg'); ?>" 
-                 alt="Khaled Taha" 
-                 class="hero-profile-img"
-                 onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=Khaled+Taha&background=1e293b&color=38bdf8&size=300';">
-            <div class="hero-img-fade"></div>
-        </div>
-        <div class="badge-experience">
-            <span class="fs-5">19+</span> <span><?php echo __('years_exp'); ?></span>
-        </div>
-    </div>
-</div>
+                <div class="col-lg-5 text-center">
+                    <div class="hero-img-wrapper">
+                        <div class="hero-img-inner">
+                            <img src="<?php echo base_url('assets/imgs/1736952843591.jfif'); ?>" 
+                                 alt="Khaled Taha" 
+                                 class="hero-profile-img"
+                                 onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=Khaled+Taha&background=1e293b&color=38bdf8&size=300';">
+                            <div class="hero-img-fade"></div>
+                        </div>
+                        <div class="badge-experience">
+                            <span class="fs-5">19+</span> <span><?php echo __('years_exp'); ?></span>
+                        </div>
+                    </div>
+                </div>
         </div>
     </div>
 </section>
