@@ -1,31 +1,36 @@
 <?php
+ob_start();
 header('Content-Type: application/json');
 require_once __DIR__ . '/../app/Helpers/functions.php';
+require_once __DIR__ . '/../app/Helpers/db.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    ob_end_clean();
     echo json_encode(['success' => false, 'message' => 'Invalid request method.']);
     exit;
 }
 
-$product_id = trim($_POST['product_id'] ?? '');
-$product_name = trim($_POST['product_name'] ?? '');
-$price = trim($_POST['price'] ?? '');
+$name = trim($_POST['name'] ?? '');
+$company = trim($_POST['company'] ?? '');
+$email = trim($_POST['email'] ?? '');
+$inquiry_type = trim($_POST['inquiry_type'] ?? '');
+$message = trim($_POST['message'] ?? '');
 
-$file_path = __DIR__ . '/../data/whatsapp_orders.json';
-$orders = file_exists($file_path) ? json_decode(file_get_contents($file_path), true) : [];
+if (empty($name) || empty($email) || empty($message)) {
+    ob_end_clean();
+    echo json_encode(['success' => false, 'message' => 'Please fill in required fields.']);
+    exit;
+}
 
-$new_order = [
-    'id' => time(),
-    'date' => date('Y-m-d H:i:s'),
-    'product_id' => htmlspecialchars($product_id),
-    'product_name' => htmlspecialchars($product_name),
-    'price' => htmlspecialchars($price)
-];
+// Insert into Turso DB Cloud
+$sql = "INSERT INTO inquiries (date, name, company, email, inquiry_type, message) VALUES (?, ?, ?, ?, ?, ?)";
+$params = [date('Y-m-d H:i:s'), $name, $company, $email, $inquiry_type, $message];
 
-array_unshift($orders, $new_order);
+$res = turso_query($sql, $params);
 
-if (file_put_contents($file_path, json_encode($orders, JSON_PRETTY_PRINT))) {
-    echo json_encode(['success' => true]);
+ob_end_clean();
+if (isset($res['results'])) {
+    echo json_encode(['success' => true, 'message' => 'Your message has been sent successfully!']);
 } else {
-    echo json_encode(['success' => false]);
+    echo json_encode(['success' => false, 'message' => 'Database Storage Error.']);
 }
