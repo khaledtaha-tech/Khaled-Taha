@@ -1,13 +1,17 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 require_once __DIR__ . '/../app/Helpers/functions.php';
 require_once __DIR__ . '/../app/Helpers/db.php';
 
 if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
     header('Location: login.php');
+    exit;
+}
+
+// Manual force re-seed if requested
+if (isset($_GET['setup_db'])) {
+    setcookie('turso_db_ready', '', time() - 3600, '/');
+    ensure_turso_setup();
+    header('Location: dashboard.php?tab=software&status=initialized');
     exit;
 }
 
@@ -71,9 +75,11 @@ $wa_orders = file_exists($wa_orders_file) ? json_decode(file_get_contents($wa_or
 
 if (isset($_GET['status'])) {
     if ($_GET['status'] === 'saved') {
-        $msg = 'Item saved successfully to Turso Cloud!';
+        $msg = 'Saved successfully to Turso Cloud!';
     } elseif ($_GET['status'] === 'deleted') {
-        $msg = 'Item deleted successfully!';
+        $msg = 'Deleted successfully!';
+    } elseif ($_GET['status'] === 'initialized') {
+        $msg = 'Database tables & seed data initialized successfully!';
     }
 }
 ?>
@@ -95,6 +101,7 @@ if (isset($_GET['status'])) {
                 <span class="text-muted small">Manage portfolio content and view inquiries</span>
             </div>
             <div>
+                <a href="?setup_db=1" class="btn btn-warning me-2"><i class="fa-solid fa-database me-1"></i> Sync/Reset DB</a>
                 <a href="../index.php" target="_blank" class="btn btn-custom-outline me-2"><i class="fa-solid fa-globe me-1"></i> View Site</a>
                 <a href="logout.php" class="btn btn-danger"><i class="fa-solid fa-right-from-bracket me-1"></i> Logout</a>
             </div>
@@ -104,24 +111,25 @@ if (isset($_GET['status'])) {
             <div class="alert alert-success py-2 mb-4"><?php echo htmlspecialchars($msg); ?></div>
         <?php endif; ?>
 
-        <ul class="nav nav-pills border-bottom border-secondary pb-3 mb-4 gap-2" id="dashboardTabs">
+        <!-- Tabs Navigation -->
+        <ul class="nav nav-pills border-bottom border-secondary pb-3 mb-4 gap-2">
             <li class="nav-item">
-                <a href="?tab=inquiries" class="nav-link text-white <?php echo $active_tab === 'inquiries' ? 'active bg-primary fw-bold' : 'btn-custom-outline'; ?>">
+                <a href="dashboard.php?tab=inquiries" class="nav-link text-white <?php echo $active_tab === 'inquiries' ? 'active bg-primary fw-bold' : 'btn-custom-outline'; ?>">
                     <i class="fa-solid fa-envelope me-2"></i> Client Inquiries (<?php echo count($inquiries); ?>)
                 </a>
             </li>
             <li class="nav-item">
-                <a href="?tab=whatsapp" class="nav-link text-white <?php echo $active_tab === 'whatsapp' ? 'active bg-primary fw-bold' : 'btn-custom-outline'; ?>">
+                <a href="dashboard.php?tab=whatsapp" class="nav-link text-white <?php echo $active_tab === 'whatsapp' ? 'active bg-primary fw-bold' : 'btn-custom-outline'; ?>">
                     <i class="fab fa-whatsapp me-2 text-success"></i> WhatsApp Orders (<?php echo count($wa_orders); ?>)
                 </a>
             </li>
             <li class="nav-item">
-                <a href="?tab=software" class="nav-link text-white <?php echo $active_tab === 'software' ? 'active bg-primary fw-bold' : 'btn-custom-outline'; ?>">
+                <a href="dashboard.php?tab=software" class="nav-link text-white <?php echo $active_tab === 'software' ? 'active bg-primary fw-bold' : 'btn-custom-outline'; ?>">
                     <i class="fa-solid fa-box me-2"></i> Software Store Items (<?php echo count($software_items); ?>)
                 </a>
             </li>
             <li class="nav-item">
-                <a href="?tab=experiences" class="nav-link text-white <?php echo $active_tab === 'experiences' ? 'active bg-primary fw-bold' : 'btn-custom-outline'; ?>">
+                <a href="dashboard.php?tab=experiences" class="nav-link text-white <?php echo $active_tab === 'experiences' ? 'active bg-primary fw-bold' : 'btn-custom-outline'; ?>">
                     <i class="fa-solid fa-briefcase me-2"></i> Work Experience (<?php echo count($experiences_items); ?>)
                 </a>
             </li>
@@ -243,18 +251,22 @@ if (isset($_GET['status'])) {
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php foreach ($software_items as $item): ?>
-                                <tr>
-                                    <td><span class="badge bg-secondary"><?php echo htmlspecialchars($item['id'] ?? ''); ?></span></td>
-                                    <td class="fw-bold"><?php echo htmlspecialchars($item['title_en'] ?? ''); ?></td>
-                                    <td><span class="badge bg-primary"><?php echo htmlspecialchars($item['tag_en'] ?? ''); ?></span></td>
-                                    <td class="text-success fw-bold"><?php echo htmlspecialchars($item['price'] ?? ''); ?></td>
-                                    <td><?php echo htmlspecialchars($item['version'] ?? ''); ?></td>
-                                    <td>
-                                        <a href="?tab=software&delete_tool=<?php echo urlencode($item['id'] ?? ''); ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this tool?');"><i class="fa-solid fa-trash"></i> Delete</a>
-                                    </td>
-                                </tr>
-                                <?php endforeach; ?>
+                                <?php if (empty($software_items)): ?>
+                                    <tr><td colspan="6" class="text-muted text-center py-4">No software tools found. Click "Sync/Reset DB" above to reload initial items.</td></tr>
+                                <?php else: ?>
+                                    <?php foreach ($software_items as $item): ?>
+                                    <tr>
+                                        <td><span class="badge bg-secondary"><?php echo htmlspecialchars($item['id'] ?? ''); ?></span></td>
+                                        <td class="fw-bold"><?php echo htmlspecialchars($item['title_en'] ?? ''); ?></td>
+                                        <td><span class="badge bg-primary"><?php echo htmlspecialchars($item['tag_en'] ?? ''); ?></span></td>
+                                        <td class="text-success fw-bold"><?php echo htmlspecialchars($item['price'] ?? ''); ?></td>
+                                        <td><?php echo htmlspecialchars($item['version'] ?? ''); ?></td>
+                                        <td>
+                                            <a href="dashboard.php?tab=software&delete_tool=<?php echo urlencode($item['id'] ?? ''); ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this item?');"><i class="fa-solid fa-trash"></i> Delete</a>
+                                        </td>
+                                    </tr>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
                             </tbody>
                         </table>
                     </div>
@@ -300,17 +312,21 @@ if (isset($_GET['status'])) {
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php foreach ($experiences_items as $exp): ?>
-                                <tr>
-                                    <td><span class="badge bg-secondary"><?php echo htmlspecialchars($exp['id'] ?? ''); ?></span></td>
-                                    <td class="small text-muted"><?php echo htmlspecialchars($exp['period'] ?? ''); ?></td>
-                                    <td class="fw-bold"><?php echo htmlspecialchars($exp['title'] ?? ''); ?></td>
-                                    <td class="small"><?php echo htmlspecialchars($exp['desc'] ?? ''); ?></td>
-                                    <td>
-                                        <a href="?tab=experiences&delete_exp=<?php echo urlencode($exp['id'] ?? ''); ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure?');"><i class="fa-solid fa-trash"></i> Delete</a>
-                                    </td>
-                                </tr>
-                                <?php endforeach; ?>
+                                <?php if (empty($experiences_items)): ?>
+                                    <tr><td colspan="5" class="text-muted text-center py-4">No experience items found. Click "Sync/Reset DB" above to reload initial items.</td></tr>
+                                <?php else: ?>
+                                    <?php foreach ($experiences_items as $exp): ?>
+                                    <tr>
+                                        <td><span class="badge bg-secondary"><?php echo htmlspecialchars($exp['id'] ?? ''); ?></span></td>
+                                        <td class="small text-muted"><?php echo htmlspecialchars($exp['period'] ?? ''); ?></td>
+                                        <td class="fw-bold"><?php echo htmlspecialchars($exp['title'] ?? ''); ?></td>
+                                        <td class="small"><?php echo htmlspecialchars($exp['desc'] ?? ''); ?></td>
+                                        <td>
+                                            <a href="dashboard.php?tab=experiences&delete_exp=<?php echo urlencode($exp['id'] ?? ''); ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this experience?');"><i class="fa-solid fa-trash"></i> Delete</a>
+                                        </td>
+                                    </tr>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
                             </tbody>
                         </table>
                     </div>
