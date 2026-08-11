@@ -1,4 +1,7 @@
 <?php require_once __DIR__ . '/../../app/Helpers/functions.php'; ?>
+<script>
+    const base_url_js = "<?php echo base_url(); ?>";
+</script>
 <!DOCTYPE html>
 <html lang="<?php echo get_lang(); ?>" dir="<?php echo is_rtl() ? 'rtl' : 'ltr'; ?>">
 <head>
