@@ -220,6 +220,7 @@
         </div>
     </div>
 </section>
+
 <!-- Contact Section -->
 <section id="contact" class="section-padding bg-section-alt">
     <div class="container">
@@ -251,24 +252,25 @@
             </div>
             <div class="col-lg-7 reveal-right">
                 <div class="contact-card-wrapper">
-                    <form>
+                    <div id="formAlertResponse" class="alert d-none mb-3"></div>
+                    <form id="mainContactForm">
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label class="form-label-custom"><?php echo __('form_name_label'); ?></label>
-                                <input type="text" class="form-control form-control-custom" placeholder="<?php echo __('form_name_placeholder'); ?>">
+                                <input type="text" name="name" class="form-control form-control-custom" placeholder="<?php echo __('form_name_placeholder'); ?>" required>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label-custom"><?php echo __('form_company_label'); ?></label>
-                                <input type="text" class="form-control form-control-custom" placeholder="<?php echo __('form_company_placeholder'); ?>">
+                                <input type="text" name="company" class="form-control form-control-custom" placeholder="<?php echo __('form_company_placeholder'); ?>">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label-custom"><?php echo __('form_email_label'); ?></label>
-                                <input type="email" class="form-control form-control-custom" placeholder="<?php echo __('form_email_placeholder'); ?>">
+                                <input type="email" name="email" class="form-control form-control-custom" placeholder="<?php echo __('form_email_placeholder'); ?>" required>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label-custom"><?php echo __('form_inquiry_label'); ?></label>
-                                <select class="form-select form-control-custom form-select-custom">
-                                    <option selected disabled><?php echo __('form_inquiry_select'); ?></option>
+                                <select name="inquiry_type" class="form-select form-control-custom form-select-custom" required>
+                                    <option value="" selected disabled><?php echo __('form_inquiry_select'); ?></option>
                                     <option value="software"><?php echo __('form_opt_software'); ?></option>
                                     <option value="consultation"><?php echo __('form_opt_consultation'); ?></option>
                                     <option value="pvc_formula"><?php echo __('form_opt_pvc'); ?></option>
@@ -277,10 +279,10 @@
                             </div>
                             <div class="col-md-12">
                                 <label class="form-label-custom"><?php echo __('form_message_label'); ?></label>
-                                <textarea class="form-control form-control-custom" rows="4" placeholder="<?php echo __('form_message_placeholder'); ?>"></textarea>
+                                <textarea name="message" class="form-control form-control-custom" rows="4" placeholder="<?php echo __('form_message_placeholder'); ?>" required></textarea>
                             </div>
                             <div class="col-md-12 pt-2">
-                                <button type="button" class="btn btn-custom-primary w-100 py-3 fs-6"><?php echo __('form_btn_send'); ?></button>
+                                <button type="submit" class="btn btn-custom-primary w-100 py-3 fs-6"><?php echo __('form_btn_send'); ?></button>
                             </div>
                         </div>
                     </form>
