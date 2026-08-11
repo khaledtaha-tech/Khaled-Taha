@@ -95,6 +95,6 @@ if (!function_exists('init_turso_tables')) {
         curl_exec($ch);
         curl_close($ch);
     }
-}
+} 
 
 init_turso_tables();
