@@ -4,7 +4,7 @@
 <section id="home" class="hero-section">
     <div class="container">
         <div class="row align-items-center gy-5">
-            <div class="col-lg-7">
+            <div class="col-lg-7 reveal-left">
                 <span class="text-uppercase hero-subtitle mb-2 d-block"><?php echo __('welcome_tag'); ?></span>
                 <h1 class="display-3 fw-extrabold text-white mb-2"><?php echo __('hero_name'); ?></h1>
                 <h3 class="h4 mb-3"><span class="text-gradient"><?php echo __('hero_title'); ?></span></h3>
@@ -18,20 +18,20 @@
                     <a href="https://wa.me/966559848021" target="_blank" class="btn-custom-whatsapp"><i class="fab fa-whatsapp me-1"></i> <?php echo __('btn_contact'); ?></a>
                 </div>
             </div>
-                <div class="col-lg-5 text-center">
-                    <div class="hero-img-wrapper">
-                        <div class="hero-img-inner">
-                            <img src="<?php echo base_url('assets/imgs/1736952843591.jfif'); ?>" 
-                                 alt="Khaled Taha" 
-                                 class="hero-profile-img"
-                                 onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=Khaled+Taha&background=1e293b&color=38bdf8&size=300';">
-                            <div class="hero-img-fade"></div>
-                        </div>
-                        <div class="badge-experience">
-                            <span class="fs-5">19+</span> <span><?php echo __('years_exp'); ?></span>
-                        </div>
+            <div class="col-lg-5 text-center reveal-right">
+                <div class="hero-img-wrapper">
+                    <div class="hero-img-inner">
+                        <img src="<?php echo base_url('assets/imgs/1736952843591.jfif'); ?>" 
+                             alt="Khaled Taha" 
+                             class="hero-profile-img"
+                             onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=Khaled+Taha&background=1e293b&color=38bdf8&size=300';">
+                        <div class="hero-img-fade"></div>
+                    </div>
+                    <div class="badge-experience">
+                        <span class="fs-5">19+</span> <span><?php echo __('years_exp'); ?></span>
                     </div>
                 </div>
+            </div>
         </div>
     </div>
 </section>
@@ -39,26 +39,26 @@
 <!-- About Section -->
 <section id="about" class="section-padding bg-section-alt">
     <div class="container">
-        <div class="text-center mb-5">
+        <div class="text-center mb-5 reveal">
             <h2 class="section-title"><?php echo __('about_title'); ?></h2>
             <p class="section-desc mx-auto" style="max-width: 700px;"><?php echo __('about_desc'); ?></p>
         </div>
         <div class="row g-4">
-            <div class="col-md-4">
+            <div class="col-md-4 reveal delay-100">
                 <div class="card-custom text-center">
                     <div class="card-icon mx-auto"><i class="fa-solid fa-industry"></i></div>
                     <h5><?php echo __('about_card1_title'); ?></h5>
                     <p><?php echo __('about_card1_desc'); ?></p>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-4 reveal delay-200">
                 <div class="card-custom text-center">
                     <div class="card-icon mx-auto"><i class="fa-solid fa-flask"></i></div>
                     <h5><?php echo __('about_card2_title'); ?></h5>
                     <p><?php echo __('about_card2_desc'); ?></p>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-4 reveal delay-300">
                 <div class="card-custom text-center">
                     <div class="card-icon mx-auto"><i class="fa-solid fa-laptop-code"></i></div>
                     <h5><?php echo __('about_card3_title'); ?></h5>
@@ -72,14 +72,14 @@
 <!-- Experience Section -->
 <section id="experience" class="section-padding">
     <div class="container">
-        <div class="text-center mb-5">
+        <div class="text-center mb-5 reveal">
             <h2 class="section-title"><?php echo __('exp_title'); ?></h2>
             <p class="section-desc"><?php echo __('exp_subtitle'); ?></p>
         </div>
         <div class="row justify-content-center">
             <div class="col-lg-9">
                 <div class="timeline">
-                    <div class="timeline-item">
+                    <div class="timeline-item reveal delay-100">
                         <div class="timeline-dot"></div>
                         <div class="card-custom">
                             <span class="timeline-date"><?php echo __('exp_job1_date'); ?></span>
@@ -87,7 +87,7 @@
                             <p class="text-muted"><?php echo __('exp_job1_desc'); ?></p>
                         </div>
                     </div>
-                    <div class="timeline-item">
+                    <div class="timeline-item reveal delay-200">
                         <div class="timeline-dot"></div>
                         <div class="card-custom">
                             <span class="timeline-date"><?php echo __('exp_job2_date'); ?></span>
@@ -95,7 +95,7 @@
                             <p class="text-muted"><?php echo __('exp_job2_desc'); ?></p>
                         </div>
                     </div>
-                    <div class="timeline-item">
+                    <div class="timeline-item reveal delay-300">
                         <div class="timeline-dot"></div>
                         <div class="card-custom">
                             <span class="timeline-date"><?php echo __('exp_job3_date'); ?></span>
@@ -103,7 +103,7 @@
                             <p class="text-muted"><?php echo __('exp_job3_desc'); ?></p>
                         </div>
                     </div>
-                    <div class="timeline-item">
+                    <div class="timeline-item reveal delay-400">
                         <div class="timeline-dot"></div>
                         <div class="card-custom">
                             <span class="timeline-date"><?php echo __('exp_job4_date'); ?></span>
@@ -120,20 +120,20 @@
 <!-- Technical Products Section -->
 <section id="products" class="section-padding bg-section-alt">
     <div class="container">
-        <div class="text-center mb-5">
+        <div class="text-center mb-5 reveal">
             <h2 class="section-title"><?php echo __('products_title'); ?></h2>
             <p class="section-desc"><?php echo __('products_subtitle'); ?></p>
         </div>
         <div class="row g-3">
-            <div class="col-md-4 col-sm-6"><div class="product-badge"><i class="fa-solid fa-circle-check"></i><span><?php echo __('prod_1'); ?></span></div></div>
-            <div class="col-md-4 col-sm-6"><div class="product-badge"><i class="fa-solid fa-circle-check"></i><span><?php echo __('prod_2'); ?></span></div></div>
-            <div class="col-md-4 col-sm-6"><div class="product-badge"><i class="fa-solid fa-circle-check"></i><span><?php echo __('prod_3'); ?></span></div></div>
-            <div class="col-md-4 col-sm-6"><div class="product-badge"><i class="fa-solid fa-circle-check"></i><span><?php echo __('prod_4'); ?></span></div></div>
-            <div class="col-md-4 col-sm-6"><div class="product-badge"><i class="fa-solid fa-circle-check"></i><span><?php echo __('prod_5'); ?></span></div></div>
-            <div class="col-md-4 col-sm-6"><div class="product-badge"><i class="fa-solid fa-circle-check"></i><span><?php echo __('prod_6'); ?></span></div></div>
-            <div class="col-md-4 col-sm-6"><div class="product-badge"><i class="fa-solid fa-circle-check"></i><span><?php echo __('prod_7'); ?></span></div></div>
-            <div class="col-md-4 col-sm-6"><div class="product-badge"><i class="fa-solid fa-circle-check"></i><span><?php echo __('prod_8'); ?></span></div></div>
-            <div class="col-md-4 col-sm-6"><div class="product-badge"><i class="fa-solid fa-circle-check"></i><span><?php echo __('prod_9'); ?></span></div></div>
+            <div class="col-md-4 col-sm-6 reveal delay-100"><div class="product-badge"><i class="fa-solid fa-circle-check"></i><span><?php echo __('prod_1'); ?></span></div></div>
+            <div class="col-md-4 col-sm-6 reveal delay-200"><div class="product-badge"><i class="fa-solid fa-circle-check"></i><span><?php echo __('prod_2'); ?></span></div></div>
+            <div class="col-md-4 col-sm-6 reveal delay-300"><div class="product-badge"><i class="fa-solid fa-circle-check"></i><span><?php echo __('prod_3'); ?></span></div></div>
+            <div class="col-md-4 col-sm-6 reveal delay-100"><div class="product-badge"><i class="fa-solid fa-circle-check"></i><span><?php echo __('prod_4'); ?></span></div></div>
+            <div class="col-md-4 col-sm-6 reveal delay-200"><div class="product-badge"><i class="fa-solid fa-circle-check"></i><span><?php echo __('prod_5'); ?></span></div></div>
+            <div class="col-md-4 col-sm-6 reveal delay-300"><div class="product-badge"><i class="fa-solid fa-circle-check"></i><span><?php echo __('prod_6'); ?></span></div></div>
+            <div class="col-md-4 col-sm-6 reveal delay-100"><div class="product-badge"><i class="fa-solid fa-circle-check"></i><span><?php echo __('prod_7'); ?></span></div></div>
+            <div class="col-md-4 col-sm-6 reveal delay-200"><div class="product-badge"><i class="fa-solid fa-circle-check"></i><span><?php echo __('prod_8'); ?></span></div></div>
+            <div class="col-md-4 col-sm-6 reveal delay-300"><div class="product-badge"><i class="fa-solid fa-circle-check"></i><span><?php echo __('prod_9'); ?></span></div></div>
         </div>
     </div>
 </section>
@@ -141,12 +141,12 @@
 <!-- Software Store Section -->
 <section id="software" class="section-padding">
     <div class="container">
-        <div class="text-center mb-5">
+        <div class="text-center mb-5 reveal">
             <h2 class="section-title"><?php echo __('software_title'); ?></h2>
             <p class="section-desc"><?php echo __('software_subtitle'); ?></p>
         </div>
         <div class="row g-4">
-            <div class="col-lg-4 col-md-6">
+            <div class="col-lg-4 col-md-6 reveal delay-100">
                 <div class="software-card">
                     <div>
                         <span class="tag-badge mb-2 d-inline-block"><?php echo __('soft_tag1'); ?></span>
@@ -162,7 +162,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4 col-md-6">
+            <div class="col-lg-4 col-md-6 reveal delay-200">
                 <div class="software-card">
                     <div>
                         <span class="tag-badge mb-2 d-inline-block"><?php echo __('soft_tag2'); ?></span>
@@ -178,7 +178,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4 col-md-6">
+            <div class="col-lg-4 col-md-6 reveal delay-300">
                 <div class="software-card">
                     <div>
                         <span class="tag-badge mb-2 d-inline-block"><?php echo __('soft_tag3'); ?></span>
@@ -202,7 +202,7 @@
 <section id="contact" class="section-padding bg-section-alt">
     <div class="container">
         <div class="row gy-5 align-items-center">
-            <div class="col-lg-5">
+            <div class="col-lg-5 reveal-left">
                 <h2 class="section-title mb-3"><?php echo __('contact_title'); ?></h2>
                 <p class="section-desc mb-4"><?php echo __('contact_desc'); ?></p>
                 <div class="d-flex align-items-center gap-3 mb-4">
@@ -227,7 +227,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-7">
+            <div class="col-lg-7 reveal-right">
                 <div class="contact-card-wrapper">
                     <form>
                         <div class="row g-3">
