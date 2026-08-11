@@ -1,11 +1,11 @@
 <?php 
+require_once __DIR__ . '/app/Helpers/functions.php';
+require_once __DIR__ . '/app/Helpers/db.php';
 require_once __DIR__ . '/views/layouts/header.php'; 
 
-// 1. Fetch Dynamic Data from JSON Store
-$store_file = __DIR__ . '/data/store.json';
-$store_data = file_exists($store_file) ? json_decode(file_get_contents($store_file), true) : [];
-$software_items = $store_data['software'] ?? [];
-$experiences_items = $store_data['experiences'] ?? [];
+// Fetch Dynamic Data from Turso Cloud DB
+$software_items = get_turso_rows("SELECT * FROM software;");
+$experiences_items = get_turso_rows("SELECT * FROM experiences;");
 ?>
 
 <!-- Hero Section -->
@@ -76,6 +76,7 @@ $experiences_items = $store_data['experiences'] ?? [];
         </div>
     </div>
 </section>
+
 <!-- Experience Section -->
 <section id="experience" class="section-padding bg-darker">
     <div class="container">
@@ -91,9 +92,9 @@ $experiences_items = $store_data['experiences'] ?? [];
                 <?php foreach ($experiences_items as $exp): ?>
                 <div class="timeline-item reveal">
                     <div class="timeline-content card-custom">
-                        <span class="badge bg-primary mb-2"><?php echo htmlspecialchars($exp['period']); ?></span>
-                        <h4 class="text-white fw-bold mb-2"><?php echo htmlspecialchars($exp['title']); ?></h4>
-                        <p class="text-light small mb-0"><?php echo htmlspecialchars($exp['desc']); ?></p>
+                        <span class="badge bg-primary mb-2"><?php echo htmlspecialchars($exp['period'] ?? ''); ?></span>
+                        <h4 class="text-white fw-bold mb-2"><?php echo htmlspecialchars($exp['title'] ?? ''); ?></h4>
+                        <p class="text-light small mb-0"><?php echo htmlspecialchars($exp['desc'] ?? ''); ?></p>
                     </div>
                 </div>
                 <?php endforeach; ?>
@@ -101,6 +102,7 @@ $experiences_items = $store_data['experiences'] ?? [];
         </div>
     </div>
 </section>
+
 <!-- Technical Products Section -->
 <section id="products" class="section-padding bg-section-alt">
     <div class="container">
@@ -122,7 +124,7 @@ $experiences_items = $store_data['experiences'] ?? [];
     </div>
 </section>
 
-<!-- Software Store Section (Dynamic) -->
+<!-- Software Store Section (Dynamic Turso DB) -->
 <section id="software" class="section-padding">
     <div class="container">
         <div class="text-center mb-5 reveal">
@@ -133,25 +135,24 @@ $experiences_items = $store_data['experiences'] ?? [];
             <?php if (empty($software_items)): ?>
                 <div class="col-12 text-center text-light py-4">No tools available at the moment.</div>
             <?php else: ?>
-                <!-- Dynamic Software Tools from Admin Panel -->
                 <?php foreach ($software_items as $index => $item): ?>
                 <div class="col-lg-4 col-md-6 reveal delay-100">
                     <div class="software-card">
                         <div>
-                            <span class="tag-badge mb-2 d-inline-block"><?php echo htmlspecialchars($item['tag_en']); ?></span>
-                            <h5 class="text-white fw-bold"><?php echo htmlspecialchars($item['title_en']); ?></h5>
-                            <p class="text-light small mb-4"><?php echo htmlspecialchars($item['desc_en']); ?></p>
+                            <span class="tag-badge mb-2 d-inline-block"><?php echo htmlspecialchars($item['tag_en'] ?? ''); ?></span>
+                            <h5 class="text-white fw-bold"><?php echo htmlspecialchars($item['title_en'] ?? ''); ?></h5>
+                            <p class="text-light small mb-4"><?php echo htmlspecialchars($item['desc_en'] ?? ''); ?></p>
                         </div>
                         <div>
                             <div class="d-flex justify-content-between align-items-center mb-3">
-                                <span class="software-price"><?php echo htmlspecialchars($item['price']); ?></span>
-                                <span class="badge bg-secondary"><?php echo htmlspecialchars($item['version']); ?></span>
+                                <span class="software-price"><?php echo htmlspecialchars($item['price'] ?? ''); ?></span>
+                                <span class="badge bg-secondary"><?php echo htmlspecialchars($item['version'] ?? ''); ?></span>
                             </div>
                             <button type="button" 
                                     class="btn btn-custom-outline w-100 btn-order-whatsapp" 
-                                    data-product-id="<?php echo htmlspecialchars($item['id']); ?>" 
-                                    data-product-name="<?php echo htmlspecialchars($item['title_en']); ?>" 
-                                    data-product-price="<?php echo htmlspecialchars($item['price']); ?>">
+                                    data-product-id="<?php echo htmlspecialchars($item['id'] ?? ''); ?>" 
+                                    data-product-name="<?php echo htmlspecialchars($item['title_en'] ?? ''); ?>" 
+                                    data-product-price="<?php echo htmlspecialchars($item['price'] ?? ''); ?>">
                                 <i class="fab fa-whatsapp me-1"></i> <?php echo __('btn_request_tool'); ?>
                             </button>
                         </div>
