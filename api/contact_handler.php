@@ -2,6 +2,7 @@
 ob_start();
 header('Content-Type: application/json');
 require_once __DIR__ . '/../app/Helpers/functions.php';
+require_once __DIR__ . '/../app/Helpers/db.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     ob_end_clean();
@@ -21,34 +22,15 @@ if (empty($name) || empty($email) || empty($message)) {
     exit;
 }
 
-// Ensure data directory exists on server
-$dir_path = __DIR__ . '/../data';
-if (!is_dir($dir_path)) {
-    mkdir($dir_path, 0777, true);
-}
+// Insert directly into Turso DB Cloud
+$sql = "INSERT INTO inquiries (date, name, company, email, inquiry_type, message) VALUES (?, ?, ?, ?, ?, ?)";
+$params = [date('Y-m-d H:i:s'), $name, $company, $email, $inquiry_type, $message];
 
-$file_path = $dir_path . '/inquiries.json';
-$inquiries = file_exists($file_path) ? json_decode(file_get_contents($file_path), true) : [];
-
-if (!is_array($inquiries)) {
-    $inquiries = [];
-}
-
-$new_inquiry = [
-    'id' => time(),
-    'date' => date('Y-m-d H:i:s'),
-    'name' => htmlspecialchars($name),
-    'company' => htmlspecialchars($company),
-    'email' => htmlspecialchars($email),
-    'inquiry_type' => htmlspecialchars($inquiry_type),
-    'message' => htmlspecialchars($message)
-];
-
-array_unshift($inquiries, $new_inquiry);
+$res = turso_query($sql, $params);
 
 ob_end_clean();
-if (file_put_contents($file_path, json_encode($inquiries, JSON_PRETTY_PRINT))) {
+if ($res !== null) {
     echo json_encode(['success' => true, 'message' => 'Your message has been sent successfully!']);
 } else {
-    echo json_encode(['success' => false, 'message' => 'Failed to save message. Check server write permissions.']);
+    echo json_encode(['success' => false, 'message' => 'Database Storage Error.']);
 }
