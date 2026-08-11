@@ -33,7 +33,8 @@ if (!function_exists('turso_query')) {
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 8);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2); // زمن الاتصال الأقصى 2 ثانية فقط
+        curl_setopt($ch, CURLOPT_TIMEOUT, 3);        // زمن تنفيذ الاستعلام الأقصى 3 ثواني
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
             'Authorization: Bearer ' . TURSO_AUTH_TOKEN,
             'Content-Type: application/json'
@@ -42,9 +43,15 @@ if (!function_exists('turso_query')) {
         curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
 
         $response = curl_exec($ch);
+        
+        if (curl_errno($ch)) {
+            curl_close($ch);
+            return null; // منع تعليق الصفحة في حالة فشل الشبكة
+        }
+        
         curl_close($ch);
 
-        return json_decode($response, true);
+        return $response ? json_decode($response, true) : null;
     }
 }
 
@@ -66,35 +73,3 @@ if (!function_exists('get_turso_rows')) {
         return $rows;
     }
 }
-
-// إنشاء الجداول دفعة واحدة في طلب واحد لتجنب البطء والتهنيج
-if (!function_exists('init_turso_tables')) {
-    function init_turso_tables() {
-        $url = rtrim(TURSO_DB_URL, '/') . '/v2/pipeline';
-
-        $body = json_encode([
-            'requests' => [
-                ['type' => 'execute', 'stmt' => ['sql' => "CREATE TABLE IF NOT EXISTS inquiries (id INTEGER PRIMARY KEY AUTOINCREMENT, date TEXT, name TEXT, company TEXT, email TEXT, inquiry_type TEXT, message TEXT);"]],
-                ['type' => 'execute', 'stmt' => ['sql' => "CREATE TABLE IF NOT EXISTS software (id TEXT PRIMARY KEY, tag_en TEXT, title_en TEXT, desc_en TEXT, price TEXT, version TEXT);"]],
-                ['type' => 'execute', 'stmt' => ['sql' => "CREATE TABLE IF NOT EXISTS experiences (id TEXT PRIMARY KEY, period TEXT, title TEXT, \"desc\" TEXT);"]],
-                ['type' => 'close']
-            ]
-        ]);
-
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 8);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Authorization: Bearer ' . TURSO_AUTH_TOKEN,
-            'Content-Type: application/json'
-        ]);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
-
-        curl_exec($ch);
-        curl_close($ch);
-    }
-} 
-
-init_turso_tables();
