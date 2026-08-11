@@ -6,13 +6,36 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
     exit;
 }
 
-$store_file = __DIR__ . '/../data/store.json';
-$inquiries_file = __DIR__ . '/../data/inquiries.json';
-$wa_orders_file = __DIR__ . '/../data/whatsapp_orders.json';
+// Ensure data directory exists
+$data_dir = __DIR__ . '/../data';
+if (!is_dir($data_dir)) {
+    @mkdir($data_dir, 0777, true);
+}
 
-$store_data = file_exists($store_file) ? json_decode(file_get_contents($store_file), true) : ['software' => [], 'experiences' => []];
+$store_file = $data_dir . '/store.json';
+$inquiries_file = $data_dir . '/inquiries.json';
+$wa_orders_file = $data_dir . '/whatsapp_orders.json';
+
+$store_data = file_exists($store_file) ? json_decode(file_get_contents($store_file), true) : [];
+if (!is_array($store_data)) {
+    $store_data = [];
+}
+if (!isset($store_data['software']) || !is_array($store_data['software'])) {
+    $store_data['software'] = [];
+}
+if (!isset($store_data['experiences']) || !is_array($store_data['experiences'])) {
+    $store_data['experiences'] = [];
+}
+
 $inquiries = file_exists($inquiries_file) ? json_decode(file_get_contents($inquiries_file), true) : [];
+if (!is_array($inquiries)) {
+    $inquiries = [];
+}
+
 $wa_orders = file_exists($wa_orders_file) ? json_decode(file_get_contents($wa_orders_file), true) : [];
+if (!is_array($wa_orders)) {
+    $wa_orders = [];
+}
 
 $msg = '';
 $active_tab = $_GET['tab'] ?? 'inquiries';
@@ -40,13 +63,13 @@ if (isset($_POST['save_tool'])) {
 
     if ($existing_index >= 0) {
         $store_data['software'][$existing_index] = $tool_data;
-        $msg = "Software item updated successfully!";
     } else {
         $store_data['software'][] = $tool_data;
-        $msg = "New software item added successfully!";
     }
+
     file_put_contents($store_file, json_encode($store_data, JSON_PRETTY_PRINT));
-    $active_tab = 'software';
+    header('Location: dashboard.php?tab=software&status=saved');
+    exit;
 }
 
 // Delete Software Tool
@@ -56,7 +79,7 @@ if (isset($_GET['delete_tool'])) {
         return $item['id'] !== $delete_id;
     }));
     file_put_contents($store_file, json_encode($store_data, JSON_PRETTY_PRINT));
-    header('Location: dashboard.php?tab=software');
+    header('Location: dashboard.php?tab=software&status=deleted');
     exit;
 }
 
@@ -81,13 +104,13 @@ if (isset($_POST['save_exp'])) {
 
     if ($existing_index >= 0) {
         $store_data['experiences'][$existing_index] = $exp_data;
-        $msg = "Experience entry updated successfully!";
     } else {
         $store_data['experiences'][] = $exp_data;
-        $msg = "New experience entry added successfully!";
     }
+
     file_put_contents($store_file, json_encode($store_data, JSON_PRETTY_PRINT));
-    $active_tab = 'experiences';
+    header('Location: dashboard.php?tab=experiences&status=saved');
+    exit;
 }
 
 // Delete Experience
@@ -97,8 +120,16 @@ if (isset($_GET['delete_exp'])) {
         return $item['id'] !== $delete_id;
     }));
     file_put_contents($store_file, json_encode($store_data, JSON_PRETTY_PRINT));
-    header('Location: dashboard.php?tab=experiences');
+    header('Location: dashboard.php?tab=experiences&status=deleted');
     exit;
+}
+
+if (isset($_GET['status'])) {
+    if ($_GET['status'] === 'saved') {
+        $msg = 'Item saved successfully!';
+    } elseif ($_GET['status'] === 'deleted') {
+        $msg = 'Item deleted successfully!';
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -177,12 +208,12 @@ if (isset($_GET['delete_exp'])) {
                                 <?php else: ?>
                                     <?php foreach ($inquiries as $inq): ?>
                                     <tr>
-                                        <td class="small text-muted"><?php echo htmlspecialchars($inq['date']); ?></td>
-                                        <td class="fw-bold"><?php echo htmlspecialchars($inq['name']); ?></td>
-                                        <td><?php echo htmlspecialchars($inq['company']); ?></td>
-                                        <td><a href="mailto:<?php echo htmlspecialchars($inq['email']); ?>" class="text-info"><?php echo htmlspecialchars($inq['email']); ?></a></td>
-                                        <td><span class="badge bg-info"><?php echo htmlspecialchars($inq['inquiry_type']); ?></span></td>
-                                        <td class="small"><?php echo htmlspecialchars($inq['message']); ?></td>
+                                        <td class="small text-muted"><?php echo htmlspecialchars($inq['date'] ?? ''); ?></td>
+                                        <td class="fw-bold"><?php echo htmlspecialchars($inq['name'] ?? ''); ?></td>
+                                        <td><?php echo htmlspecialchars($inq['company'] ?? ''); ?></td>
+                                        <td><a href="mailto:<?php echo htmlspecialchars($inq['email'] ?? ''); ?>" class="text-info"><?php echo htmlspecialchars($inq['email'] ?? ''); ?></a></td>
+                                        <td><span class="badge bg-info"><?php echo htmlspecialchars($inq['inquiry_type'] ?? ''); ?></span></td>
+                                        <td class="small"><?php echo htmlspecialchars($inq['message'] ?? ''); ?></td>
                                     </tr>
                                     <?php endforeach; ?>
                                 <?php endif; ?>
@@ -211,10 +242,10 @@ if (isset($_GET['delete_exp'])) {
                                 <?php else: ?>
                                     <?php foreach ($wa_orders as $ord): ?>
                                     <tr>
-                                        <td class="small text-muted"><?php echo htmlspecialchars($ord['date']); ?></td>
-                                        <td><span class="badge bg-secondary"><?php echo htmlspecialchars($ord['product_id']); ?></span></td>
-                                        <td class="fw-bold"><?php echo htmlspecialchars($ord['product_name']); ?></td>
-                                        <td class="text-success fw-bold"><?php echo htmlspecialchars($ord['price']); ?></td>
+                                        <td class="small text-muted"><?php echo htmlspecialchars($ord['date'] ?? ''); ?></td>
+                                        <td><span class="badge bg-secondary"><?php echo htmlspecialchars($ord['product_id'] ?? ''); ?></span></td>
+                                        <td class="fw-bold"><?php echo htmlspecialchars($ord['product_name'] ?? ''); ?></td>
+                                        <td class="text-success fw-bold"><?php echo htmlspecialchars($ord['price'] ?? ''); ?></td>
                                     </tr>
                                     <?php endforeach; ?>
                                 <?php endif; ?>
@@ -275,13 +306,13 @@ if (isset($_GET['delete_exp'])) {
                             <tbody>
                                 <?php foreach ($store_data['software'] as $item): ?>
                                 <tr>
-                                    <td><span class="badge bg-secondary"><?php echo htmlspecialchars($item['id']); ?></span></td>
-                                    <td class="fw-bold"><?php echo htmlspecialchars($item['title_en']); ?></td>
-                                    <td><span class="badge bg-primary"><?php echo htmlspecialchars($item['tag_en']); ?></span></td>
-                                    <td class="text-success fw-bold"><?php echo htmlspecialchars($item['price']); ?></td>
-                                    <td><?php echo htmlspecialchars($item['version']); ?></td>
+                                    <td><span class="badge bg-secondary"><?php echo htmlspecialchars($item['id'] ?? ''); ?></span></td>
+                                    <td class="fw-bold"><?php echo htmlspecialchars($item['title_en'] ?? ''); ?></td>
+                                    <td><span class="badge bg-primary"><?php echo htmlspecialchars($item['tag_en'] ?? ''); ?></span></td>
+                                    <td class="text-success fw-bold"><?php echo htmlspecialchars($item['price'] ?? ''); ?></td>
+                                    <td><?php echo htmlspecialchars($item['version'] ?? ''); ?></td>
                                     <td>
-                                        <a href="?tab=software&delete_tool=<?php echo urlencode($item['id']); ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this tool?');"><i class="fa-solid fa-trash"></i> Delete</a>
+                                        <a href="?tab=software&delete_tool=<?php echo urlencode($item['id'] ?? ''); ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this tool?');"><i class="fa-solid fa-trash"></i> Delete</a>
                                     </td>
                                 </tr>
                                 <?php endforeach; ?>
@@ -333,12 +364,12 @@ if (isset($_GET['delete_exp'])) {
                             <tbody>
                                 <?php foreach ($store_data['experiences'] as $exp): ?>
                                 <tr>
-                                    <td><span class="badge bg-secondary"><?php echo htmlspecialchars($exp['id']); ?></span></td>
-                                    <td class="small text-muted"><?php echo htmlspecialchars($exp['period']); ?></td>
-                                    <td class="fw-bold"><?php echo htmlspecialchars($exp['title']); ?></td>
-                                    <td class="small"><?php echo htmlspecialchars($exp['desc']); ?></td>
+                                    <td><span class="badge bg-secondary"><?php echo htmlspecialchars($exp['id'] ?? ''); ?></span></td>
+                                    <td class="small text-muted"><?php echo htmlspecialchars($exp['period'] ?? ''); ?></td>
+                                    <td class="fw-bold"><?php echo htmlspecialchars($exp['title'] ?? ''); ?></td>
+                                    <td class="small"><?php echo htmlspecialchars($exp['desc'] ?? ''); ?></td>
                                     <td>
-                                        <a href="?tab=experiences&delete_exp=<?php echo urlencode($exp['id']); ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure?');"><i class="fa-solid fa-trash"></i> Delete</a>
+                                        <a href="?tab=experiences&delete_exp=<?php echo urlencode($exp['id'] ?? ''); ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure?');"><i class="fa-solid fa-trash"></i> Delete</a>
                                     </td>
                                 </tr>
                                 <?php endforeach; ?>
