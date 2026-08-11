@@ -10,30 +10,37 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-// دعم قراءة البيانات سواء اتبعثت كـ FormData أو JSON Payload
 $json_input = json_decode(file_get_contents('php://input'), true);
 
-$name = trim($_POST['name'] ?? $json_input['name'] ?? '');
-$company = trim($_POST['company'] ?? $json_input['company'] ?? '');
-$email = trim($_POST['email'] ?? $json_input['email'] ?? '');
-$inquiry_type = trim($_POST['inquiry_type'] ?? $json_input['inquiry_type'] ?? '');
-$message = trim($_POST['message'] ?? $json_input['message'] ?? '');
+$product_id = trim($_POST['product_id'] ?? $json_input['product_id'] ?? '');
+$product_name = trim($_POST['product_name'] ?? $json_input['product_name'] ?? '');
+$price = trim($_POST['price'] ?? $json_input['price'] ?? '');
 
-if (empty($name) || empty($email) || empty($message)) {
+if (empty($product_name)) {
     ob_end_clean();
-    echo json_encode(['success' => false, 'message' => 'Please fill in required fields.']);
+    echo json_encode(['success' => false, 'message' => 'Product details missing.']);
     exit;
 }
 
-// Insert into Turso DB Cloud
-$sql = "INSERT INTO inquiries (date, name, company, email, inquiry_type, message) VALUES (?, ?, ?, ?, ?, ?)";
-$params = [date('Y-m-d H:i:s'), $name, $company, $email, $inquiry_type, $message];
+// حفظ طلب الواتساب في ملف JSON أو جدول الواتساب في Turso
+$file = __DIR__ . '/../data/whatsapp_orders.json';
+$orders = file_exists($file) ? json_decode(file_get_contents($file), true) : [];
 
-$res = turso_query($sql, $params);
+$new_order = [
+    'date' => date('Y-m-d H:i:s'),
+    'product_id' => $product_id,
+    'product_name' => $product_name,
+    'price' => $price
+];
+
+array_unshift($orders, $new_order);
+
+// التأكد من وجود مجلد data
+if (!is_dir(__DIR__ . '/../data')) {
+    mkdir(__DIR__ . '/../data', 0755, true);
+}
+
+file_put_contents($file, json_encode($orders, JSON_PRETTY_PRINT));
 
 ob_end_clean();
-if ($res !== null && isset($res['results'])) {
-    echo json_encode(['success' => true, 'message' => 'Your message has been sent successfully!']);
-} else {
-    echo json_encode(['success' => false, 'message' => 'Database Storage Error.']);
-}
+echo json_encode(['success' => true]);
