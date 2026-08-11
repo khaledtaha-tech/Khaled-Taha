@@ -16,6 +16,11 @@
     --font-ar: 'Cairo', sans-serif;
 }
 
+/* Smooth Scrolling & Universal Transition Setup */
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     background-color: var(--bg-dark);
     color: var(--text-main);
@@ -23,35 +28,63 @@ body {
     line-height: 1.6;
     margin: 0;
     padding: 0;
+    overflow-x: hidden;
 }
 
 [dir="rtl"] body {
     font-family: var(--font-ar);
 }
 
-/* Navbar */
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-dark);
+}
+
+::-webkit-scrollbar-thumb {
+    background: #1f2937;
+    border-radius: 5px;
+    border: 2px solid var(--bg-dark);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-blue);
+}
+
+/* Navbar Motion */
 .navbar {
     background-color: rgba(9, 13, 22, 0.85) !important;
     backdrop-filter: blur(12px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     padding: 16px 0;
+    transition: all 0.3s ease;
 }
 
 .navbar-brand {
     color: var(--text-white) !important;
+    transition: transform 0.3s ease;
+}
+
+.navbar-brand:hover {
+    transform: scale(1.03);
 }
 
 .navbar-nav .nav-link {
     color: var(--text-muted) !important;
     font-weight: 500;
     font-size: 0.95rem;
-    transition: color 0.3s ease;
+    transition: all 0.3s ease;
     padding: 0.5rem 1rem !important;
+    position: relative;
 }
 
 .navbar-nav .nav-link:hover,
 .navbar-nav .nav-link.active {
-    color: var(--text-white) !important;
+    color: var(--primary-cyan) !important;
+    transform: translateY(-1px);
 }
 
 /* Text Gradient Fix */
@@ -62,10 +95,32 @@ body {
     display: inline-block;
 }
 
+/* Keyframes Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes badgeFloat {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
 /* Hero Section */
 .hero-section {
     padding: 160px 0 100px 0;
-    background: radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.12) 0%, transparent 70%);
+    background: radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.15) 0%, transparent 70%);
+    animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .hero-subtitle {
@@ -73,39 +128,78 @@ body {
     font-weight: 600;
 }
 
-.profile-avatar-placeholder {
-    width: 280px;
-    height: 280px;
-    border-radius: 24px;
-    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-    border: 2px solid var(--border-card);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto;
+/* Hero Profile Image Outer Box (Overflow Visible for Badge) */
+.hero-img-wrapper {
     position: relative;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    width: 310px;
+    height: 380px;
+    margin: 0 auto;
+    border-radius: 24px;
+    background: #0d1322;
+    border: 2px solid var(--border-card);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(37, 99, 235, 0.15);
+    overflow: visible;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
 }
 
+.hero-img-wrapper:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 25px 60px rgba(37, 99, 235, 0.25);
+}
+
+.hero-img-inner {
+    width: 100%;
+    height: 100%;
+    border-radius: 22px;
+    overflow: hidden;
+    position: relative;
+}
+
+.hero-profile-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    filter: contrast(105%) brightness(98%);
+    transition: transform 0.5s ease;
+}
+
+.hero-img-wrapper:hover .hero-profile-img {
+    transform: scale(1.04);
+}
+
+.hero-img-fade {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 30%;
+    background: linear-gradient(to top, rgba(9, 13, 22, 0.9) 0%, transparent 100%);
+    pointer-events: none;
+}
+
+/* Badge Positioning Outside Card Boundary */
 .badge-experience {
     position: absolute;
-    bottom: -15px;
-    right: -15px;
+    bottom: -20px;
+    right: -25px;
+    z-index: 10;
     background: linear-gradient(135deg, var(--primary-blue), #1d4ed8);
     color: var(--text-white);
-    padding: 10px 20px;
-    border-radius: 12px;
-    font-weight: 700;
-    box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
+    padding: 12px 24px;
+    border-radius: 16px;
+    font-weight: 800;
+    box-shadow: 0 12px 25px rgba(37, 99, 235, 0.4);
+    border: 3px solid var(--bg-dark);
+    animation: badgeFloat 3.5s ease-in-out infinite;
 }
 
 [dir="rtl"] .badge-experience {
     right: auto;
-    left: -15px;
+    left: -25px;
 }
 
-/* Buttons */
+/* Interactive Buttons */
 .btn-custom-primary {
     background: var(--primary-blue);
     color: var(--text-white);
@@ -113,7 +207,7 @@ body {
     border-radius: 10px;
     font-weight: 600;
     text-decoration: none;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: inline-block;
     border: none;
 }
@@ -121,8 +215,8 @@ body {
 .btn-custom-primary:hover {
     background: #1d4ed8;
     color: var(--text-white);
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 24px rgba(37, 99, 235, 0.35);
 }
 
 .btn-custom-outline {
@@ -132,7 +226,7 @@ body {
     border-radius: 10px;
     font-weight: 600;
     text-decoration: none;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: inline-block;
     border: 1px solid var(--border-card);
 }
@@ -140,7 +234,8 @@ body {
 .btn-custom-outline:hover {
     border-color: var(--primary-cyan);
     color: var(--primary-cyan);
-    transform: translateY(-2px);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(56, 189, 248, 0.15);
 }
 
 .btn-custom-whatsapp {
@@ -150,18 +245,18 @@ body {
     border-radius: 10px;
     font-weight: 600;
     text-decoration: none;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: inline-block;
 }
 
 .btn-custom-whatsapp:hover {
     background: #059669;
     color: var(--text-white);
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 24px rgba(16, 185, 129, 0.35);
 }
 
-/* Sections */
+/* Sections Padding & Borders */
 .section-padding {
     padding: 100px 0;
 }
@@ -184,20 +279,20 @@ body {
     font-size: 1.05rem;
 }
 
-/* Cards */
+/* Custom Cards */
 .card-custom {
     background-color: var(--bg-card);
     border: 1px solid var(--border-card);
     border-radius: 16px;
     padding: 32px 24px;
     height: 100%;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .card-custom:hover {
     border-color: var(--border-hover);
-    transform: translateY(-6px);
-    box-shadow: 0 20px 30px rgba(0, 0, 0, 0.3);
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
 }
 
 .card-custom h5 {
@@ -218,15 +313,20 @@ body {
     width: 56px;
     height: 56px;
     border-radius: 12px;
-    background: rgba(37, 99, 235, 0.1);
+    background: rgba(37, 99, 235, 0.12);
     color: var(--primary-cyan);
     display: inline-flex;
     align-items: center;
     justify-content: center;
     font-size: 1.6rem;
+    transition: transform 0.3s ease;
 }
 
-/* Experience Timeline */
+.card-custom:hover .card-icon {
+    transform: scale(1.1);
+}
+
+/* Timeline */
 .timeline {
     position: relative;
     padding-left: 20px;
@@ -258,6 +358,12 @@ body {
     border-radius: 50%;
     background: var(--primary-blue);
     border: 3px solid var(--bg-dark);
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.timeline-item:hover .timeline-dot {
+    background: var(--primary-cyan);
+    transform: scale(1.2);
 }
 
 [dir="rtl"] .timeline-dot {
@@ -273,7 +379,7 @@ body {
     margin-bottom: 6px;
 }
 
-/* Technical Products Badge Grid */
+/* Product Badges Grid */
 .product-badge {
     background: var(--bg-card);
     border: 1px solid var(--border-card);
@@ -287,7 +393,8 @@ body {
 
 .product-badge:hover {
     border-color: var(--primary-cyan);
-    transform: translateY(-3px);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
 .product-badge i {
@@ -295,7 +402,7 @@ body {
     font-size: 1.2rem;
 }
 
-/* Software Store Pricing Card */
+/* Software Pricing Card */
 .software-card {
     background: var(--bg-card);
     border: 1px solid var(--border-card);
@@ -305,12 +412,13 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    transition: all 0.3s ease;
+    transition: all 0.35s ease;
 }
 
 .software-card:hover {
     border-color: var(--accent-green);
-    transform: translateY(-5px);
+    transform: translateY(-8px);
+    box-shadow: 0 20px 35px rgba(0, 0, 0, 0.35);
 }
 
 .software-price {
@@ -328,63 +436,7 @@ body {
     border-radius: 6px;
 }
 
-/* Form Control Custom */
-.form-control-custom {
-    background-color: var(--bg-dark);
-    border: 1px solid var(--border-card);
-    color: var(--text-white);
-    border-radius: 10px;
-    padding: 12px 16px;
-}
-
-.form-control-custom:focus {
-    background-color: var(--bg-dark);
-    border-color: var(--primary-blue);
-    color: var(--text-white);
-    box-shadow: none;
-}
-
-/* Footer Upgraded */
-.footer-upgraded {
-    background-color: #060911;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-    padding-top: 70px;
-    padding-bottom: 30px;
-}
-
-.footer-link {
-    color: var(--text-muted);
-    text-decoration: none;
-    transition: color 0.3s ease;
-    display: block;
-    margin-bottom: 10px;
-}
-
-.footer-link:hover {
-    color: var(--primary-cyan);
-}
-
-.social-icon-btn {
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
-    background: var(--bg-card);
-    border: 1px solid var(--border-card);
-    color: var(--text-white);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    transition: all 0.3s ease;
-}
-
-.social-icon-btn:hover {
-    background: var(--primary-blue);
-    color: var(--text-white);
-    border-color: var(--primary-blue);
-}
-
-/* Contact Form Styling Fixes */
+/* Contact Form Styling */
 .form-label-custom {
     color: #e2e8f0 !important;
     font-size: 0.875rem !important;
@@ -437,15 +489,13 @@ body {
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
 }
 
-
-
-
-
 /* Footer Contrast & Legibility Fixes */
 .footer-upgraded {
     background-color: #060911 !important;
     border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
     color: #f1f5f9 !important;
+    padding-top: 70px;
+    padding-bottom: 30px;
 }
 
 .footer-upgraded p,
@@ -479,34 +529,23 @@ body {
     color: #94a3b8 !important;
 }
 
-/* Hero Profile Image Styling */
-.hero-img-wrapper {
-    position: relative;
-    width: 300px;
-    height: 360px;
-    margin: 0 auto;
-    border-radius: 24px;
-    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-    border: 2px solid var(--border-card);
-    box-shadow: 0 20px 50px rgba(37, 99, 235, 0.25);
-    overflow: hidden;
+.social-icon-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-card);
+    color: var(--text-white);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: all 0.3s ease;
 }
 
-.hero-profile-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: top center;
-    mix-blend-mode: lighten;
-    filter: contrast(108%) brightness(95%);
-}
-
-.hero-img-fade {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 35%;
-    background: linear-gradient(to top, var(--bg-dark) 0%, transparent 100%);
-    pointer-events: none;
+.social-icon-btn:hover {
+    background: var(--primary-blue);
+    color: var(--text-white);
+    border-color: var(--primary-blue);
+    transform: translateY(-3px);
 }
