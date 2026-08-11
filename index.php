@@ -1,4 +1,12 @@
-<?php require_once __DIR__ . '/views/layouts/header.php'; ?>
+<?php 
+require_once __DIR__ . '/views/layouts/header.php'; 
+
+// 1. Fetch Dynamic Data from JSON Store
+$store_file = __DIR__ . '/data/store.json';
+$store_data = file_exists($store_file) ? json_decode(file_get_contents($store_file), true) : [];
+$software_items = $store_data['software'] ?? [];
+$experiences_items = $store_data['experiences'] ?? [];
+?>
 
 <!-- Hero Section -->
 <section id="home" class="hero-section">
@@ -69,7 +77,7 @@
     </div>
 </section>
 
-<!-- Experience Section -->
+<!-- Experience Section (Dynamic) -->
 <section id="experience" class="section-padding">
     <div class="container">
         <div class="text-center mb-5 reveal">
@@ -79,38 +87,29 @@
         <div class="row justify-content-center">
             <div class="col-lg-9">
                 <div class="timeline">
-                    <div class="timeline-item reveal delay-100">
-                        <div class="timeline-dot"></div>
-                        <div class="card-custom">
-                            <span class="timeline-date"><?php echo __('exp_job1_date'); ?></span>
-                            <h5><?php echo __('exp_job1_title'); ?></h5>
-                            <p class="text-muted"><?php echo __('exp_job1_desc'); ?></p>
+                    <?php if (empty($experiences_items)): ?>
+                        <!-- Fallback Static Experiences if JSON is empty -->
+                        <div class="timeline-item reveal delay-100">
+                            <div class="timeline-dot"></div>
+                            <div class="card-custom">
+                                <span class="timeline-date"><?php echo __('exp_job1_date'); ?></span>
+                                <h5><?php echo __('exp_job1_title'); ?></h5>
+                                <p class="text-muted"><?php echo __('exp_job1_desc'); ?></p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="timeline-item reveal delay-200">
-                        <div class="timeline-dot"></div>
-                        <div class="card-custom">
-                            <span class="timeline-date"><?php echo __('exp_job2_date'); ?></span>
-                            <h5><?php echo __('exp_job2_title'); ?></h5>
-                            <p class="text-muted"><?php echo __('exp_job2_desc'); ?></p>
-                        </div>
-                    </div>
-                    <div class="timeline-item reveal delay-300">
-                        <div class="timeline-dot"></div>
-                        <div class="card-custom">
-                            <span class="timeline-date"><?php echo __('exp_job3_date'); ?></span>
-                            <h5><?php echo __('exp_job3_title'); ?></h5>
-                            <p class="text-muted"><?php echo __('exp_job3_desc'); ?></p>
-                        </div>
-                    </div>
-                    <div class="timeline-item reveal delay-400">
-                        <div class="timeline-dot"></div>
-                        <div class="card-custom">
-                            <span class="timeline-date"><?php echo __('exp_job4_date'); ?></span>
-                            <h5><?php echo __('exp_job4_title'); ?></h5>
-                            <p class="text-muted"><?php echo __('exp_job4_desc'); ?></p>
-                        </div>
-                    </div>
+                    <?php else: ?>
+                        <!-- Dynamic Experiences from Admin Panel -->
+                        <?php foreach ($experiences_items as $idx => $exp): ?>
+                            <div class="timeline-item reveal delay-100">
+                                <div class="timeline-dot"></div>
+                                <div class="card-custom">
+                                    <span class="timeline-date"><?php echo htmlspecialchars($exp['period']); ?></span>
+                                    <h5><?php echo htmlspecialchars($exp['title']); ?></h5>
+                                    <p class="text-muted"><?php echo htmlspecialchars($exp['desc']); ?></p>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -138,7 +137,7 @@
     </div>
 </section>
 
-<!-- Software Store Section -->
+<!-- Software Store Section (Dynamic) -->
 <section id="software" class="section-padding">
     <div class="container">
         <div class="text-center mb-5 reveal">
@@ -146,82 +145,40 @@
             <p class="section-desc"><?php echo __('software_subtitle'); ?></p>
         </div>
         <div class="row g-4">
-            <!-- Product 1 -->
-            <div class="col-lg-4 col-md-6 reveal delay-100">
-                <div class="software-card">
-                    <div>
-                        <span class="tag-badge mb-2 d-inline-block"><?php echo __('soft_tag1'); ?></span>
-                        <h5 class="text-white fw-bold"><?php echo __('soft_title1'); ?></h5>
-                        <p class="text-muted small mb-4"><?php echo __('soft_desc1'); ?></p>
-                    </div>
-                    <div>
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <span class="software-price">$49.00</span>
-                            <span class="badge bg-secondary">v2.1</span>
+            <?php if (empty($software_items)): ?>
+                <div class="col-12 text-center text-muted py-4">No tools available at the moment.</div>
+            <?php else: ?>
+                <!-- Dynamic Software Tools from Admin Panel -->
+                <?php foreach ($software_items as $index => $item): ?>
+                <div class="col-lg-4 col-md-6 reveal delay-100">
+                    <div class="software-card">
+                        <div>
+                            <span class="tag-badge mb-2 d-inline-block"><?php echo htmlspecialchars($item['tag_en']); ?></span>
+                            <h5 class="text-white fw-bold"><?php echo htmlspecialchars($item['title_en']); ?></h5>
+                            <p class="text-muted small mb-4"><?php echo htmlspecialchars($item['desc_en']); ?></p>
                         </div>
-                        <button type="button" 
-                                class="btn btn-custom-outline w-100 btn-order-whatsapp" 
-                                data-product-id="SW-101" 
-                                data-product-name="<?php echo __('soft_title1'); ?>" 
-                                data-product-price="$49.00">
-                            <i class="fab fa-whatsapp me-1"></i> <?php echo __('btn_request_tool'); ?>
-                        </button>
+                        <div>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="software-price"><?php echo htmlspecialchars($item['price']); ?></span>
+                                <span class="badge bg-secondary"><?php echo htmlspecialchars($item['version']); ?></span>
+                            </div>
+                            <button type="button" 
+                                    class="btn btn-custom-outline w-100 btn-order-whatsapp" 
+                                    data-product-id="<?php echo htmlspecialchars($item['id']); ?>" 
+                                    data-product-name="<?php echo htmlspecialchars($item['title_en']); ?>" 
+                                    data-product-price="<?php echo htmlspecialchars($item['price']); ?>">
+                                <i class="fab fa-whatsapp me-1"></i> <?php echo __('btn_request_tool'); ?>
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
-
-            <!-- Product 2 -->
-            <div class="col-lg-4 col-md-6 reveal delay-200">
-                <div class="software-card">
-                    <div>
-                        <span class="tag-badge mb-2 d-inline-block"><?php echo __('soft_tag2'); ?></span>
-                        <h5 class="text-white fw-bold"><?php echo __('soft_title2'); ?></h5>
-                        <p class="text-muted small mb-4"><?php echo __('soft_desc2'); ?></p>
-                    </div>
-                    <div>
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <span class="software-price">$99.00</span>
-                            <span class="badge bg-secondary">v1.4</span>
-                        </div>
-                        <button type="button" 
-                                class="btn btn-custom-outline w-100 btn-order-whatsapp" 
-                                data-product-id="SW-102" 
-                                data-product-name="<?php echo __('soft_title2'); ?>" 
-                                data-product-price="$99.00">
-                            <i class="fab fa-whatsapp me-1"></i> <?php echo __('btn_request_tool'); ?>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Product 3 -->
-            <div class="col-lg-4 col-md-6 reveal delay-300">
-                <div class="software-card">
-                    <div>
-                        <span class="tag-badge mb-2 d-inline-block"><?php echo __('soft_tag3'); ?></span>
-                        <h5 class="text-white fw-bold"><?php echo __('soft_title3'); ?></h5>
-                        <p class="text-muted small mb-4"><?php echo __('soft_desc3'); ?></p>
-                    </div>
-                    <div>
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <span class="software-price">$79.00</span>
-                            <span class="badge bg-secondary">v3.0</span>
-                        </div>
-                        <button type="button" 
-                                class="btn btn-custom-outline w-100 btn-order-whatsapp" 
-                                data-product-id="SW-103" 
-                                data-product-name="<?php echo __('soft_title3'); ?>" 
-                                data-product-price="$79.00">
-                            <i class="fab fa-whatsapp me-1"></i> <?php echo __('btn_request_tool'); ?>
-                        </button>
-                    </div>
-                </div>
-            </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
         </div>
     </div>
 </section>
 
-<!-- Contact Section -->
+<!-- Contact Section (Form Dynamic Handler Ready) -->
 <section id="contact" class="section-padding bg-section-alt">
     <div class="container">
         <div class="row gy-5 align-items-center">
