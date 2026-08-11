@@ -94,7 +94,7 @@ $experiences_items = $store_data['experiences'] ?? [];
                             <div class="card-custom">
                                 <span class="timeline-date"><?php echo __('exp_job1_date'); ?></span>
                                 <h5><?php echo __('exp_job1_title'); ?></h5>
-                                <p class="text-muted"><?php echo __('exp_job1_desc'); ?></p>
+                                <p class="text-light"><?php echo __('exp_job1_desc'); ?></p>
                             </div>
                         </div>
                     <?php else: ?>
@@ -105,7 +105,7 @@ $experiences_items = $store_data['experiences'] ?? [];
                                 <div class="card-custom">
                                     <span class="timeline-date"><?php echo htmlspecialchars($exp['period']); ?></span>
                                     <h5><?php echo htmlspecialchars($exp['title']); ?></h5>
-                                    <p class="text-muted"><?php echo htmlspecialchars($exp['desc']); ?></p>
+                                    <p class="text-light"><?php echo htmlspecialchars($exp['desc']); ?></p>
                                 </div>
                             </div>
                         <?php endforeach; ?>
@@ -146,7 +146,7 @@ $experiences_items = $store_data['experiences'] ?? [];
         </div>
         <div class="row g-4">
             <?php if (empty($software_items)): ?>
-                <div class="col-12 text-center text-muted py-4">No tools available at the moment.</div>
+                <div class="col-12 text-center text-light py-4">No tools available at the moment.</div>
             <?php else: ?>
                 <!-- Dynamic Software Tools from Admin Panel -->
                 <?php foreach ($software_items as $index => $item): ?>
@@ -155,7 +155,7 @@ $experiences_items = $store_data['experiences'] ?? [];
                         <div>
                             <span class="tag-badge mb-2 d-inline-block"><?php echo htmlspecialchars($item['tag_en']); ?></span>
                             <h5 class="text-white fw-bold"><?php echo htmlspecialchars($item['title_en']); ?></h5>
-                            <p class="text-muted small mb-4"><?php echo htmlspecialchars($item['desc_en']); ?></p>
+                            <p class="text-light small mb-4"><?php echo htmlspecialchars($item['desc_en']); ?></p>
                         </div>
                         <div>
                             <div class="d-flex justify-content-between align-items-center mb-3">
@@ -188,21 +188,21 @@ $experiences_items = $store_data['experiences'] ?? [];
                 <div class="d-flex align-items-center gap-3 mb-4">
                     <div class="card-icon"><i class="fab fa-whatsapp"></i></div>
                     <div>
-                        <span class="text-muted small d-block"><?php echo __('contact_label_whatsapp'); ?></span>
+                        <span class="text-light small d-block"><?php echo __('contact_label_whatsapp'); ?></span>
                         <span class="text-white fw-bold fs-5">+966 55 984 8021</span>
                     </div>
                 </div>
                 <div class="d-flex align-items-center gap-3 mb-4">
                     <div class="card-icon"><i class="fa-solid fa-envelope"></i></div>
                     <div>
-                        <span class="text-muted small d-block"><?php echo __('contact_label_email'); ?></span>
+                        <span class="text-light small d-block"><?php echo __('contact_label_email'); ?></span>
                         <span class="text-white fw-bold fs-6">khaled.taha.pro@gmail.com</span>
                     </div>
                 </div>
                 <div class="d-flex align-items-center gap-3">
                     <div class="card-icon"><i class="fa-solid fa-location-dot"></i></div>
                     <div>
-                        <span class="text-muted small d-block"><?php echo __('contact_label_location'); ?></span>
+                        <span class="text-light small d-block"><?php echo __('contact_label_location'); ?></span>
                         <span class="text-white fw-bold fs-6"><?php echo __('contact_location_val'); ?></span>
                     </div>
                 </div>
