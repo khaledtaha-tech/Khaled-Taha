@@ -1,13 +1,14 @@
 <?php require_once __DIR__ . '/../../app/Helpers/functions.php'; ?>
-<script>
-    const base_url_js = "<?php echo base_url(); ?>";
-</script>
 <!DOCTYPE html>
 <html lang="<?php echo get_lang(); ?>" dir="<?php echo is_rtl() ? 'rtl' : 'ltr'; ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Khaled Taha | Portfolio</title>
+    <!-- Global JS Base URL Definition -->
+    <script>
+        const base_url_js = "<?php echo rtrim(base_url(), '/'); ?>";
+    </script>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- FontAwesome Icons -->
