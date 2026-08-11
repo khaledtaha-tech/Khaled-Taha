@@ -15,6 +15,7 @@ $inquiries = file_exists($inquiries_file) ? json_decode(file_get_contents($inqui
 $wa_orders = file_exists($wa_orders_file) ? json_decode(file_get_contents($wa_orders_file), true) : [];
 
 $msg = '';
+$active_tab = $_GET['tab'] ?? 'inquiries';
 
 // Add / Update Software Tool
 if (isset($_POST['save_tool'])) {
@@ -45,6 +46,7 @@ if (isset($_POST['save_tool'])) {
         $msg = "New software item added successfully!";
     }
     file_put_contents($store_file, json_encode($store_data, JSON_PRETTY_PRINT));
+    $active_tab = 'software';
 }
 
 // Delete Software Tool
@@ -85,6 +87,7 @@ if (isset($_POST['save_exp'])) {
         $msg = "New experience entry added successfully!";
     }
     file_put_contents($store_file, json_encode($store_data, JSON_PRETTY_PRINT));
+    $active_tab = 'experiences';
 }
 
 // Delete Experience
@@ -97,63 +100,63 @@ if (isset($_GET['delete_exp'])) {
     header('Location: dashboard.php?tab=experiences');
     exit;
 }
-
-$active_tab = $_GET['tab'] ?? 'inquiries';
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - Khaled Taha</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="<?php echo base_url('assets/css/style.css'); ?>" rel="stylesheet">
+    <link href="../assets/css/style.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="p-4 bg-dark text-white">
-    <div class="container">
+    <div class="container-fluid" style="max-width: 1200px;">
         <!-- Dashboard Header -->
         <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-secondary pb-3">
             <div>
-                <h2 class="fw-bold mb-0">Control Panel Dashboard</h2>
+                <h2 class="fw-bold mb-0 text-white">Control Panel Dashboard</h2>
                 <span class="text-muted small">Manage portfolio content and view inquiries</span>
             </div>
             <div>
-                <a href="<?php echo base_url(); ?>" target="_blank" class="btn btn-custom-outline me-2"><i class="fa-solid fa-globe me-1"></i> View Site</a>
+                <a href="../index.php" target="_blank" class="btn btn-custom-outline me-2"><i class="fa-solid fa-globe me-1"></i> View Site</a>
                 <a href="logout.php" class="btn btn-danger"><i class="fa-solid fa-right-from-bracket me-1"></i> Logout</a>
             </div>
         </div>
 
         <?php if ($msg): ?>
-            <div class="alert alert-success py-2 mb-4"><?php echo e($msg); ?></div>
+            <div class="alert alert-success py-2 mb-4"><?php echo htmlspecialchars($msg); ?></div>
         <?php endif; ?>
 
         <!-- Nav Navigation Bar -->
-        <ul class="nav nav-tabs border-secondary mb-4" id="dashboardTabs" role="tablist">
+        <ul class="nav nav-pills border-bottom border-secondary pb-3 mb-4 gap-2" id="dashboardTabs">
             <li class="nav-item">
-                <button class="nav-link text-white <?php echo $active_tab === 'inquiries' ? 'active bg-primary fw-bold' : ''; ?>" id="inquiries-tab" data-bs-toggle="tab" data-bs-target="#inquiries-panel" type="button">
+                <a href="?tab=inquiries" class="nav-link text-white <?php echo $active_tab === 'inquiries' ? 'active bg-primary fw-bold' : 'btn-custom-outline'; ?>">
                     <i class="fa-solid fa-envelope me-2"></i> Client Inquiries (<?php echo count($inquiries); ?>)
-                </button>
+                </a>
             </li>
             <li class="nav-item">
-                <button class="nav-link text-white <?php echo $active_tab === 'whatsapp' ? 'active bg-primary fw-bold' : ''; ?>" id="whatsapp-tab" data-bs-toggle="tab" data-bs-target="#whatsapp-panel" type="button">
+                <a href="?tab=whatsapp" class="nav-link text-white <?php echo $active_tab === 'whatsapp' ? 'active bg-primary fw-bold' : 'btn-custom-outline'; ?>">
                     <i class="fab fa-whatsapp me-2 text-success"></i> WhatsApp Orders (<?php echo count($wa_orders); ?>)
-                </button>
+                </a>
             </li>
             <li class="nav-item">
-                <button class="nav-link text-white <?php echo $active_tab === 'software' ? 'active bg-primary fw-bold' : ''; ?>" id="software-tab" data-bs-toggle="tab" data-bs-target="#software-panel" type="button">
+                <a href="?tab=software" class="nav-link text-white <?php echo $active_tab === 'software' ? 'active bg-primary fw-bold' : 'btn-custom-outline'; ?>">
                     <i class="fa-solid fa-box me-2"></i> Software Store Items
-                </button>
+                </a>
             </li>
             <li class="nav-item">
-                <button class="nav-link text-white <?php echo $active_tab === 'experiences' ? 'active bg-primary fw-bold' : ''; ?>" id="experiences-tab" data-bs-toggle="tab" data-bs-target="#experiences-panel" type="button">
+                <a href="?tab=experiences" class="nav-link text-white <?php echo $active_tab === 'experiences' ? 'active bg-primary fw-bold' : 'btn-custom-outline'; ?>">
                     <i class="fa-solid fa-briefcase me-2"></i> Work Experience
-                </button>
+                </a>
             </li>
         </ul>
 
-        <div class="tab-content" id="dashboardTabContent">
-            <!-- Tab 1: Client Inquiries Inbox -->
-            <div class="tab-pane fade <?php echo $active_tab === 'inquiries' ? 'show active' : ''; ?>" id="inquiries-panel">
+        <!-- Tab Content -->
+        <div>
+            <?php if ($active_tab === 'inquiries'): ?>
+                <!-- Tab 1: Client Inquiries Inbox -->
                 <div class="card-custom">
                     <h4 class="text-white fw-bold mb-3"><i class="fa-solid fa-inbox text-primary me-2"></i> Form Inquiries Inbox</h4>
                     <div class="table-responsive">
@@ -174,12 +177,12 @@ $active_tab = $_GET['tab'] ?? 'inquiries';
                                 <?php else: ?>
                                     <?php foreach ($inquiries as $inq): ?>
                                     <tr>
-                                        <td class="small text-muted"><?php echo e($inq['date']); ?></td>
-                                        <td class="fw-bold"><?php echo e($inq['name']); ?></td>
-                                        <td><?php echo e($inq['company']); ?></td>
-                                        <td><a href="mailto:<?php echo e($inq['email']); ?>" class="text-info"><?php echo e($inq['email']); ?></a></td>
-                                        <td><span class="badge bg-info"><?php echo e($inq['inquiry_type']); ?></span></td>
-                                        <td class="small"><?php echo e($inq['message']); ?></td>
+                                        <td class="small text-muted"><?php echo htmlspecialchars($inq['date']); ?></td>
+                                        <td class="fw-bold"><?php echo htmlspecialchars($inq['name']); ?></td>
+                                        <td><?php echo htmlspecialchars($inq['company']); ?></td>
+                                        <td><a href="mailto:<?php echo htmlspecialchars($inq['email']); ?>" class="text-info"><?php echo htmlspecialchars($inq['email']); ?></a></td>
+                                        <td><span class="badge bg-info"><?php echo htmlspecialchars($inq['inquiry_type']); ?></span></td>
+                                        <td class="small"><?php echo htmlspecialchars($inq['message']); ?></td>
                                     </tr>
                                     <?php endforeach; ?>
                                 <?php endif; ?>
@@ -187,10 +190,9 @@ $active_tab = $_GET['tab'] ?? 'inquiries';
                         </table>
                     </div>
                 </div>
-            </div>
 
-            <!-- Tab 2: WhatsApp Order Logs -->
-            <div class="tab-pane fade <?php echo $active_tab === 'whatsapp' ? 'show active' : ''; ?>" id="whatsapp-panel">
+            <?php elseif ($active_tab === 'whatsapp'): ?>
+                <!-- Tab 2: WhatsApp Order Logs -->
                 <div class="card-custom">
                     <h4 class="text-white fw-bold mb-3"><i class="fab fa-whatsapp text-success me-2"></i> WhatsApp Direct Orders Log</h4>
                     <div class="table-responsive">
@@ -209,10 +211,10 @@ $active_tab = $_GET['tab'] ?? 'inquiries';
                                 <?php else: ?>
                                     <?php foreach ($wa_orders as $ord): ?>
                                     <tr>
-                                        <td class="small text-muted"><?php echo e($ord['date']); ?></td>
-                                        <td><span class="badge bg-secondary"><?php echo e($ord['product_id']); ?></span></td>
-                                        <td class="fw-bold"><?php echo e($ord['product_name']); ?></td>
-                                        <td class="text-success fw-bold"><?php echo e($ord['price']); ?></td>
+                                        <td class="small text-muted"><?php echo htmlspecialchars($ord['date']); ?></td>
+                                        <td><span class="badge bg-secondary"><?php echo htmlspecialchars($ord['product_id']); ?></span></td>
+                                        <td class="fw-bold"><?php echo htmlspecialchars($ord['product_name']); ?></td>
+                                        <td class="text-success fw-bold"><?php echo htmlspecialchars($ord['price']); ?></td>
                                     </tr>
                                     <?php endforeach; ?>
                                 <?php endif; ?>
@@ -220,10 +222,9 @@ $active_tab = $_GET['tab'] ?? 'inquiries';
                         </table>
                     </div>
                 </div>
-            </div>
 
-            <!-- Tab 3: Software Store Items (CRUD) -->
-            <div class="tab-pane fade <?php echo $active_tab === 'software' ? 'show active' : ''; ?>" id="software-panel">
+            <?php elseif ($active_tab === 'software'): ?>
+                <!-- Tab 3: Software Store Items (CRUD) -->
                 <div class="card-custom mb-4">
                     <h4 class="text-white fw-bold mb-3"><i class="fa-solid fa-plus-circle text-primary me-2"></i> Add / Edit Software Tool</h4>
                     <form method="POST" class="row g-3">
@@ -274,13 +275,13 @@ $active_tab = $_GET['tab'] ?? 'inquiries';
                             <tbody>
                                 <?php foreach ($store_data['software'] as $item): ?>
                                 <tr>
-                                    <td><span class="badge bg-secondary"><?php echo e($item['id']); ?></span></td>
-                                    <td class="fw-bold"><?php echo e($item['title_en']); ?></td>
-                                    <td><span class="badge bg-primary"><?php echo e($item['tag_en']); ?></span></td>
-                                    <td class="text-success fw-bold"><?php echo e($item['price']); ?></td>
-                                    <td><?php echo e($item['version']); ?></td>
+                                    <td><span class="badge bg-secondary"><?php echo htmlspecialchars($item['id']); ?></span></td>
+                                    <td class="fw-bold"><?php echo htmlspecialchars($item['title_en']); ?></td>
+                                    <td><span class="badge bg-primary"><?php echo htmlspecialchars($item['tag_en']); ?></span></td>
+                                    <td class="text-success fw-bold"><?php echo htmlspecialchars($item['price']); ?></td>
+                                    <td><?php echo htmlspecialchars($item['version']); ?></td>
                                     <td>
-                                        <a href="?delete_tool=<?php echo urlencode($item['id']); ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this tool?');"><i class="fa-solid fa-trash"></i> Delete</a>
+                                        <a href="?tab=software&delete_tool=<?php echo urlencode($item['id']); ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this tool?');"><i class="fa-solid fa-trash"></i> Delete</a>
                                     </td>
                                 </tr>
                                 <?php endforeach; ?>
@@ -288,10 +289,9 @@ $active_tab = $_GET['tab'] ?? 'inquiries';
                         </table>
                     </div>
                 </div>
-            </div>
 
-            <!-- Tab 4: Work Experience (CRUD) -->
-            <div class="tab-pane fade <?php echo $active_tab === 'experiences' ? 'show active' : ''; ?>" id="experiences-panel">
+            <?php elseif ($active_tab === 'experiences'): ?>
+                <!-- Tab 4: Work Experience (CRUD) -->
                 <div class="card-custom mb-4">
                     <h4 class="text-white fw-bold mb-3"><i class="fa-solid fa-plus-circle text-primary me-2"></i> Add / Edit Experience</h4>
                     <form method="POST" class="row g-3">
@@ -333,12 +333,12 @@ $active_tab = $_GET['tab'] ?? 'inquiries';
                             <tbody>
                                 <?php foreach ($store_data['experiences'] as $exp): ?>
                                 <tr>
-                                    <td><span class="badge bg-secondary"><?php echo e($exp['id']); ?></span></td>
-                                    <td class="small text-muted"><?php echo e($exp['period']); ?></td>
-                                    <td class="fw-bold"><?php echo e($exp['title']); ?></td>
-                                    <td class="small"><?php echo e($exp['desc']); ?></td>
+                                    <td><span class="badge bg-secondary"><?php echo htmlspecialchars($exp['id']); ?></span></td>
+                                    <td class="small text-muted"><?php echo htmlspecialchars($exp['period']); ?></td>
+                                    <td class="fw-bold"><?php echo htmlspecialchars($exp['title']); ?></td>
+                                    <td class="small"><?php echo htmlspecialchars($exp['desc']); ?></td>
                                     <td>
-                                        <a href="?delete_exp=<?php echo urlencode($exp['id']); ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure?');"><i class="fa-solid fa-trash"></i> Delete</a>
+                                        <a href="?tab=experiences&delete_exp=<?php echo urlencode($exp['id']); ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure?');"><i class="fa-solid fa-trash"></i> Delete</a>
                                     </td>
                                 </tr>
                                 <?php endforeach; ?>
@@ -346,10 +346,10 @@ $active_tab = $_GET['tab'] ?? 'inquiries';
                         </table>
                     </div>
                 </div>
-            </div>
+            <?php endif; ?>
         </div>
     </div>
 
-    <script href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
