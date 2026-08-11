@@ -107,7 +107,7 @@ if (isset($_GET['status'])) {
         <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-secondary pb-3">
             <div>
                 <h2 class="fw-bold mb-0 text-white">Control Panel Dashboard (Turso Cloud)</h2>
-                <span class="text-muted small">Manage portfolio content and view inquiries</span>
+                <span class="text-light small">Manage portfolio content and view inquiries</span>
             </div>
             <div>
                 <a href="../index.php" target="_blank" class="btn btn-custom-outline me-2"><i class="fa-solid fa-globe me-1"></i> View Site</a>
@@ -163,11 +163,11 @@ if (isset($_GET['status'])) {
                             </thead>
                             <tbody>
                                 <?php if (empty($inquiries)): ?>
-                                    <tr><td colspan="6" class="text-muted text-center py-4">No messages received yet.</td></tr>
+                                    <tr><td colspan="6" class="text-light text-center py-4">No messages received yet.</td></tr>
                                 <?php else: ?>
                                     <?php foreach ($inquiries as $inq): ?>
                                     <tr>
-                                        <td class="small text-muted"><?php echo htmlspecialchars($inq['date'] ?? ''); ?></td>
+                                        <td class="small text-light"><?php echo htmlspecialchars($inq['date'] ?? ''); ?></td>
                                         <td class="fw-bold"><?php echo htmlspecialchars($inq['name'] ?? ''); ?></td>
                                         <td><?php echo htmlspecialchars($inq['company'] ?? ''); ?></td>
                                         <td><a href="mailto:<?php echo htmlspecialchars($inq['email'] ?? ''); ?>" class="text-info"><?php echo htmlspecialchars($inq['email'] ?? ''); ?></a></td>
@@ -197,11 +197,11 @@ if (isset($_GET['status'])) {
                             </thead>
                             <tbody>
                                 <?php if (empty($wa_orders)): ?>
-                                    <tr><td colspan="4" class="text-muted text-center py-4">No WhatsApp orders recorded yet.</td></tr>
+                                    <tr><td colspan="4" class="text-light text-center py-4">No WhatsApp orders recorded yet.</td></tr>
                                 <?php else: ?>
                                     <?php foreach ($wa_orders as $ord): ?>
                                     <tr>
-                                        <td class="small text-muted"><?php echo htmlspecialchars($ord['date'] ?? ''); ?></td>
+                                        <td class="small text-light"><?php echo htmlspecialchars($ord['date'] ?? ''); ?></td>
                                         <td><span class="badge bg-secondary"><?php echo htmlspecialchars($ord['product_id'] ?? ''); ?></span></td>
                                         <td class="fw-bold"><?php echo htmlspecialchars($ord['product_name'] ?? ''); ?></td>
                                         <td class="text-success fw-bold"><?php echo htmlspecialchars($ord['price'] ?? ''); ?></td>
@@ -324,7 +324,7 @@ if (isset($_GET['status'])) {
                                 <?php foreach ($experiences_items as $exp): ?>
                                 <tr>
                                     <td><span class="badge bg-secondary"><?php echo htmlspecialchars($exp['id'] ?? ''); ?></span></td>
-                                    <td class="small text-muted"><?php echo htmlspecialchars($exp['period'] ?? ''); ?></td>
+                                    <td class="small text-light"><?php echo htmlspecialchars($exp['period'] ?? ''); ?></td>
                                     <td class="fw-bold"><?php echo htmlspecialchars($exp['title'] ?? ''); ?></td>
                                     <td class="small"><?php echo htmlspecialchars($exp['desc'] ?? ''); ?></td>
                                     <td>
