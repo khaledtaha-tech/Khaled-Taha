@@ -1,0 +1,43 @@
+{
+    "hero_image": "assets/imgs/1736952843591.jfif",
+    "software": [
+        {
+            "id": "SW-101",
+            "tag_en": "Extrusion Tool",
+            "title_en": "Pipe Weight Calculator",
+            "desc_en": "Instant weight and cost estimation based on pipe dimensions, material density, and PHR calcium carbonate ratio.",
+            "price": "$49.00",
+            "version": "v2.1"
+        },
+        {
+            "id": "SW-102",
+            "tag_en": "Operations",
+            "title_en": "OEE & Scrap Dashboard",
+            "desc_en": "Complete production tracking tool to measure machine efficiency, shift output, downtime, and scrap percentages.",
+            "price": "$99.00",
+            "version": "v1.4"
+        },
+        {
+            "id": "SW-103",
+            "tag_en": "Planning",
+            "title_en": "Labor & Machine Allocator",
+            "desc_en": "Smart planning spreadsheet system to balance daily workloads, technician shifts, and operational capacities.",
+            "price": "$79.00",
+            "version": "v3.0"
+        }
+    ],
+    "experiences": [
+        {
+            "id": 1,
+            "period": "Jan 2025 - Present",
+            "title": "Manufacturing Manager - Salem Balhamer Holding",
+            "desc": "Overseeing operational management, factory workflow optimization, machine allocation, and quality systems across production lines."
+        },
+        {
+            "id": 2,
+            "period": "2020 - Dec 2024",
+            "title": "Production Manager - Saudi Industries for Pipes (SIP)",
+            "desc": "Managed high-capacity extrusion lines for uPVC and HDPE pipes, optimized compounding formulas, and achieved up to 35% reduction in scrap rates."
+        }
+    ]
+}
