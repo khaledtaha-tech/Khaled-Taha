@@ -1,73 +1,45 @@
 <?php
 require_once __DIR__ . '/../app/Helpers/functions.php';
+require_once __DIR__ . '/../app/Helpers/db.php';
 
 if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
     header('Location: login.php');
     exit;
 }
 
-// Ensure data directory exists
-$data_dir = __DIR__ . '/../data';
-if (!is_dir($data_dir)) {
-    @mkdir($data_dir, 0777, true);
-}
-
-$store_file = $data_dir . '/store.json';
-$inquiries_file = $data_dir . '/inquiries.json';
-$wa_orders_file = $data_dir . '/whatsapp_orders.json';
-
-$store_data = file_exists($store_file) ? json_decode(file_get_contents($store_file), true) : [];
-if (!is_array($store_data)) {
-    $store_data = [];
-}
-if (!isset($store_data['software']) || !is_array($store_data['software'])) {
-    $store_data['software'] = [];
-}
-if (!isset($store_data['experiences']) || !is_array($store_data['experiences'])) {
-    $store_data['experiences'] = [];
-}
-
-$inquiries = file_exists($inquiries_file) ? json_decode(file_get_contents($inquiries_file), true) : [];
-if (!is_array($inquiries)) {
-    $inquiries = [];
-}
-
-$wa_orders = file_exists($wa_orders_file) ? json_decode(file_get_contents($wa_orders_file), true) : [];
-if (!is_array($wa_orders)) {
-    $wa_orders = [];
-}
-
 $msg = '';
 $active_tab = $_GET['tab'] ?? 'inquiries';
 
-// Add / Update Software Tool
-if (isset($_POST['save_tool'])) {
-    $tool_id = trim($_POST['tool_id']);
-    $existing_index = -1;
-
-    foreach ($store_data['software'] as $index => $item) {
-        if ($item['id'] === $tool_id) {
-            $existing_index = $index;
-            break;
+// Helper to extract rows from Turso SQL response
+function get_turso_rows($query, $params = []) {
+    $res = turso_query($query, $params);
+    $rows = [];
+    if (isset($res['results'][0]['response']['result']['rows'])) {
+        $raw_rows = $res['results'][0]['response']['result']['rows'];
+        $cols = array_column($res['results'][0]['response']['result']['cols'], 'name');
+        foreach ($raw_rows as $row) {
+            $item = [];
+            foreach ($row as $i => $val) {
+                $item[$cols[$i]] = $val['value'] ?? '';
+            }
+            $rows[] = $item;
         }
     }
+    return $rows;
+}
 
-    $tool_data = [
-        'id' => $tool_id,
-        'tag_en' => trim($_POST['tag_en']),
-        'title_en' => trim($_POST['title_en']),
-        'desc_en' => trim($_POST['desc_en']),
-        'price' => trim($_POST['price']),
-        'version' => trim($_POST['version'])
-    ];
+// Save / Update Software Tool
+if (isset($_POST['save_tool'])) {
+    $tool_id = trim($_POST['tool_id']);
+    $tag_en = trim($_POST['tag_en']);
+    $title_en = trim($_POST['title_en']);
+    $desc_en = trim($_POST['desc_en']);
+    $price = trim($_POST['price']);
+    $version = trim($_POST['version']);
 
-    if ($existing_index >= 0) {
-        $store_data['software'][$existing_index] = $tool_data;
-    } else {
-        $store_data['software'][] = $tool_data;
-    }
-
-    file_put_contents($store_file, json_encode($store_data, JSON_PRETTY_PRINT));
+    $sql = "INSERT INTO software (id, tag_en, title_en, desc_en, price, version) VALUES (?, ?, ?, ?, ?, ?)
+            ON CONFLICT(id) DO UPDATE SET tag_en=excluded.tag_en, title_en=excluded.title_en, desc_en=excluded.desc_en, price=excluded.price, version=excluded.version;";
+    turso_query($sql, [$tool_id, $tag_en, $title_en, $desc_en, $price, $version]);
     header('Location: dashboard.php?tab=software&status=saved');
     exit;
 }
@@ -75,40 +47,21 @@ if (isset($_POST['save_tool'])) {
 // Delete Software Tool
 if (isset($_GET['delete_tool'])) {
     $delete_id = $_GET['delete_tool'];
-    $store_data['software'] = array_values(array_filter($store_data['software'], function($item) use ($delete_id) {
-        return $item['id'] !== $delete_id;
-    }));
-    file_put_contents($store_file, json_encode($store_data, JSON_PRETTY_PRINT));
+    turso_query("DELETE FROM software WHERE id = ?", [$delete_id]);
     header('Location: dashboard.php?tab=software&status=deleted');
     exit;
 }
 
-// Add / Update Experience
+// Save / Update Experience
 if (isset($_POST['save_exp'])) {
     $exp_id = trim($_POST['exp_id']);
-    $existing_index = -1;
+    $period = trim($_POST['period']);
+    $title = trim($_POST['title']);
+    $desc = trim($_POST['desc']);
 
-    foreach ($store_data['experiences'] as $index => $item) {
-        if ($item['id'] === $exp_id) {
-            $existing_index = $index;
-            break;
-        }
-    }
-
-    $exp_data = [
-        'id' => $exp_id,
-        'period' => trim($_POST['period']),
-        'title' => trim($_POST['title']),
-        'desc' => trim($_POST['desc'])
-    ];
-
-    if ($existing_index >= 0) {
-        $store_data['experiences'][$existing_index] = $exp_data;
-    } else {
-        $store_data['experiences'][] = $exp_data;
-    }
-
-    file_put_contents($store_file, json_encode($store_data, JSON_PRETTY_PRINT));
+    $sql = "INSERT INTO experiences (id, period, title, desc) VALUES (?, ?, ?, ?)
+            ON CONFLICT(id) DO UPDATE SET period=excluded.period, title=excluded.title, desc=excluded.desc;";
+    turso_query($sql, [$exp_id, $period, $title, $desc]);
     header('Location: dashboard.php?tab=experiences&status=saved');
     exit;
 }
@@ -116,17 +69,23 @@ if (isset($_POST['save_exp'])) {
 // Delete Experience
 if (isset($_GET['delete_exp'])) {
     $delete_id = $_GET['delete_exp'];
-    $store_data['experiences'] = array_values(array_filter($store_data['experiences'], function($item) use ($delete_id) {
-        return $item['id'] !== $delete_id;
-    }));
-    file_put_contents($store_file, json_encode($store_data, JSON_PRETTY_PRINT));
+    turso_query("DELETE FROM experiences WHERE id = ?", [$delete_id]);
     header('Location: dashboard.php?tab=experiences&status=deleted');
     exit;
 }
 
+// Fetch Data directly from Turso Cloud
+$inquiries = get_turso_rows("SELECT * FROM inquiries ORDER BY id DESC;");
+$software_items = get_turso_rows("SELECT * FROM software;");
+$experiences_items = get_turso_rows("SELECT * FROM experiences;");
+
+// WhatsApp Order Logs from JSON fallback/file
+$wa_orders_file = __DIR__ . '/../data/whatsapp_orders.json';
+$wa_orders = file_exists($wa_orders_file) ? json_decode(file_get_contents($wa_orders_file), true) : [];
+
 if (isset($_GET['status'])) {
     if ($_GET['status'] === 'saved') {
-        $msg = 'Item saved successfully!';
+        $msg = 'Item saved successfully to Turso Cloud!';
     } elseif ($_GET['status'] === 'deleted') {
         $msg = 'Item deleted successfully!';
     }
@@ -147,7 +106,7 @@ if (isset($_GET['status'])) {
         <!-- Dashboard Header -->
         <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-secondary pb-3">
             <div>
-                <h2 class="fw-bold mb-0 text-white">Control Panel Dashboard</h2>
+                <h2 class="fw-bold mb-0 text-white">Control Panel Dashboard (Turso Cloud)</h2>
                 <span class="text-muted small">Manage portfolio content and view inquiries</span>
             </div>
             <div>
@@ -174,12 +133,12 @@ if (isset($_GET['status'])) {
             </li>
             <li class="nav-item">
                 <a href="?tab=software" class="nav-link text-white <?php echo $active_tab === 'software' ? 'active bg-primary fw-bold' : 'btn-custom-outline'; ?>">
-                    <i class="fa-solid fa-box me-2"></i> Software Store Items
+                    <i class="fa-solid fa-box me-2"></i> Software Store Items (<?php echo count($software_items); ?>)
                 </a>
             </li>
             <li class="nav-item">
                 <a href="?tab=experiences" class="nav-link text-white <?php echo $active_tab === 'experiences' ? 'active bg-primary fw-bold' : 'btn-custom-outline'; ?>">
-                    <i class="fa-solid fa-briefcase me-2"></i> Work Experience
+                    <i class="fa-solid fa-briefcase me-2"></i> Work Experience (<?php echo count($experiences_items); ?>)
                 </a>
             </li>
         </ul>
@@ -304,7 +263,7 @@ if (isset($_GET['status'])) {
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php foreach ($store_data['software'] as $item): ?>
+                                <?php foreach ($software_items as $item): ?>
                                 <tr>
                                     <td><span class="badge bg-secondary"><?php echo htmlspecialchars($item['id'] ?? ''); ?></span></td>
                                     <td class="fw-bold"><?php echo htmlspecialchars($item['title_en'] ?? ''); ?></td>
@@ -362,7 +321,7 @@ if (isset($_GET['status'])) {
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php foreach ($store_data['experiences'] as $exp): ?>
+                                <?php foreach ($experiences_items as $exp): ?>
                                 <tr>
                                     <td><span class="badge bg-secondary"><?php echo htmlspecialchars($exp['id'] ?? ''); ?></span></td>
                                     <td class="small text-muted"><?php echo htmlspecialchars($exp['period'] ?? ''); ?></td>
