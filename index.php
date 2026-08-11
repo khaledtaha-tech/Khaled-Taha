@@ -20,7 +20,7 @@
             </div>
             <div class="col-lg-5 text-center">
                 <div class="hero-img-wrapper">
-                    <img src="<?php echo base_url('assets/images/khaled-taha.jpg'); ?>" alt="Khaled Taha" class="hero-profile-img">
+                    <img src="<?php echo base_url('assets/imgs/1736952843591.jfif'); ?>" alt="Khaled Taha" class="hero-profile-img">
                     <div class="hero-img-fade"></div>
                     <div class="badge-experience">
                         <span class="fs-5">19+</span> <span><?php echo __('years_exp'); ?></span>
