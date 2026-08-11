@@ -146,6 +146,7 @@
             <p class="section-desc"><?php echo __('software_subtitle'); ?></p>
         </div>
         <div class="row g-4">
+            <!-- Product 1 -->
             <div class="col-lg-4 col-md-6 reveal delay-100">
                 <div class="software-card">
                     <div>
@@ -158,10 +159,18 @@
                             <span class="software-price">$49.00</span>
                             <span class="badge bg-secondary">v2.1</span>
                         </div>
-                        <a href="#contact" class="btn btn-custom-outline w-100"><?php echo __('btn_request_tool'); ?></a>
+                        <button type="button" 
+                                class="btn btn-custom-outline w-100 btn-order-whatsapp" 
+                                data-product-id="SW-101" 
+                                data-product-name="<?php echo __('soft_title1'); ?>" 
+                                data-product-price="$49.00">
+                            <i class="fab fa-whatsapp me-1"></i> <?php echo __('btn_request_tool'); ?>
+                        </button>
                     </div>
                 </div>
             </div>
+
+            <!-- Product 2 -->
             <div class="col-lg-4 col-md-6 reveal delay-200">
                 <div class="software-card">
                     <div>
@@ -174,10 +183,18 @@
                             <span class="software-price">$99.00</span>
                             <span class="badge bg-secondary">v1.4</span>
                         </div>
-                        <a href="#contact" class="btn btn-custom-outline w-100"><?php echo __('btn_request_tool'); ?></a>
+                        <button type="button" 
+                                class="btn btn-custom-outline w-100 btn-order-whatsapp" 
+                                data-product-id="SW-102" 
+                                data-product-name="<?php echo __('soft_title2'); ?>" 
+                                data-product-price="$99.00">
+                            <i class="fab fa-whatsapp me-1"></i> <?php echo __('btn_request_tool'); ?>
+                        </button>
                     </div>
                 </div>
             </div>
+
+            <!-- Product 3 -->
             <div class="col-lg-4 col-md-6 reveal delay-300">
                 <div class="software-card">
                     <div>
@@ -190,14 +207,19 @@
                             <span class="software-price">$79.00</span>
                             <span class="badge bg-secondary">v3.0</span>
                         </div>
-                        <a href="#contact" class="btn btn-custom-outline w-100"><?php echo __('btn_request_tool'); ?></a>
+                        <button type="button" 
+                                class="btn btn-custom-outline w-100 btn-order-whatsapp" 
+                                data-product-id="SW-103" 
+                                data-product-name="<?php echo __('soft_title3'); ?>" 
+                                data-product-price="$79.00">
+                            <i class="fab fa-whatsapp me-1"></i> <?php echo __('btn_request_tool'); ?>
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
-
 <!-- Contact Section -->
 <section id="contact" class="section-padding bg-section-alt">
     <div class="container">
